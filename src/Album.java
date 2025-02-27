@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class Album {
 	private String title;
 	private String artist;
