@@ -133,7 +133,59 @@ public class LibraryModel {
         }
         return false;
     } 
+    
 
+    public List<Song> searchLibSongsWithTitle(String title) {
+        List<Song> results = new ArrayList<>();
+        String searchTitle = title.toLowerCase();
+ 
+        for (Song song : myLibrarySongs) {
+            if (song.getTitle().toLowerCase().equals(searchTitle)) {
+                results.add(song);
+            }
+        }
+        return results;
+    }
+    
+    
+    public List<Song> searchLibSongsWithArtist(String artist){
+    	List<Song> results = new ArrayList<>();
+    	String searchArtist = artist.toLowerCase();
+    	
+    	for(Song song : myLibrarySongs) {
+    		if(song.getTitle().toLowerCase().equals(searchArtist)) {
+    			results.add(song);
+    		}
+    	}
+    	return results;
+    } 
+    
+    
+    public List<Album> searchLibAlbumWithTitle(String title){
+    	List<Album> results = new ArrayList<>();
+    	String searchTitle = title.toLowerCase();
+    	
+    	for(Album album : myLibraryAlbums) {
+    		if(album.getTitle().toLowerCase().equals(searchTitle)) {
+    			results.add(album);
+    		}
+    	}
+    	return results;
+    }
+    
+    
+    public List<Album> searchLibAlbumsWithArtist(String artist){
+    	List<Album> results = new ArrayList<>();
+    	String searchArtist = artist.toLowerCase();
+    	
+    	for(Album album : myLibraryAlbums) {
+    		if(album.getTitle().toLowerCase().equals(searchArtist)) {
+    			results.add(album);
+    		}
+    	}
+    	return results;
+    }
+ 
     
 }
   
