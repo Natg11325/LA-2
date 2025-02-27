@@ -31,8 +31,6 @@ public class MusicStore {
                     loadAlbumFromFile(filename);
                 }
             } 
-
-        scanner.close();
     }
 
     // Load a specific album from its file
@@ -171,6 +169,7 @@ public class MusicStore {
         return albumSongs;
     }
     
+    
     // Get all albums
     public List<Album> getAllAlbums() {
         return new ArrayList<>(albums);
@@ -180,5 +179,6 @@ public class MusicStore {
     public List<Song> getAllSongs() {
         return new ArrayList<>(songs);
     }
+
 }
 
