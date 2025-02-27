@@ -158,7 +158,7 @@ public class LibraryModel {
     		}
     	}
     	return results;
-    }
+    } 
     
     
     public List<Album> searchLibAlbumWithTitle(String title){
