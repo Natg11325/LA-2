@@ -1,4 +1,4 @@
-package src;
+//package src;
 import java.util.ArrayList;
 
 public class Playlist {
@@ -13,6 +13,11 @@ public class Playlist {
 	public String getName() {
 		return this.name;
 	}
+
+	//added 
+	public List<Song> getSongs() {
+        	return new ArrayList<>(songs);
+    	}
 	
 	public void addSong(Song song) {
 		songs.add(song);
@@ -33,5 +38,10 @@ public class Playlist {
 		}
 	}
 	
+	// added
+    	@Override
+    	public String toString() {
+        	return "Playlist: " + name + ", " + songs.size() + " songs";
+    	}
 	
 }
