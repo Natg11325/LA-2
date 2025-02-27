@@ -108,6 +108,34 @@ public class LibraryModel {
     }
     
     
+    public boolean markSongAsFav(String title, String artist) {
+    	// Searches for the song in the user's library
+        for (Song song : myLibrarySongs) {
+            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+                song.setFavorite(true);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+
+    public boolean rateSong(String title, String artist, int rating) {
+        if (rating < 1 || rating > 5) {
+            return false;
+        }
+        
+        // Searches for the song in the user's library        
+        for (Song song : myLibrarySongs) {
+            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+                song.setRating(rating);
+                return true;
+            }
+        }
+        return false;
+    } 
+
     
 }
   
