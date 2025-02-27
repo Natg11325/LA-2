@@ -115,8 +115,7 @@ public class LibraryModel {
                 song.setFavorite(true);
                 return true;
             }
-        }
-        
+        }      
         return false;
     }
 
@@ -125,7 +124,6 @@ public class LibraryModel {
         if (rating < 1 || rating > 5) {
             return false;
         }
-        
         // Searches for the song in the user's library        
         for (Song song : myLibrarySongs) {
             if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
