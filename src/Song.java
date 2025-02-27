@@ -65,6 +65,16 @@ public class Song {
     public String toString() {
         return title + " by " + artist + " from album " + album;
     }
+    
+    /*
+     * This method overrides the equals method so that it compares 2 song objects.
+     * It does this by comparing the artist and the title. */
+    @Override
+    public boolean equals(Object other) {
+    	Song otherSong = (Song) other;
+    	return (this.title.toLowerCase().equals(otherSong.title.toLowerCase())) && 
+    			(this.artist.toLowerCase().equals(otherSong.artist.toLowerCase()));
+    }
 }
 
 
