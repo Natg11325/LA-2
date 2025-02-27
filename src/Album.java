@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Albums {
+public class Album {
 	private String title;
 	private String artist;
 	private String genre;
 	private int year;
 	private List<String> songs;
 	
-	public Albums(String title, String artist, String genre, int year) {
+	public Album(String title, String artist, String genre, int year) {
 		this.title = title;
 		this.artist = artist;
 		this.genre = genre;
