@@ -154,7 +154,7 @@ public class LibraryModel {
     	String searchArtist = artist.toLowerCase();
     	
     	for(Song song : myLibrarySongs) {
-    		if(song.getTitle().toLowerCase().equals(searchArtist)) {
+    		if(song.getArtist().toLowerCase().equals(searchArtist)) {
     			results.add(song);
     		}
     	}
@@ -180,7 +180,7 @@ public class LibraryModel {
     	String searchArtist = artist.toLowerCase();
     	
     	for(Album album : myLibraryAlbums) {
-    		if(album.getTitle().toLowerCase().equals(searchArtist)) {
+    		if(album.getArtist().toLowerCase().equals(searchArtist)) {
     			results.add(album);
     		}
     	}
