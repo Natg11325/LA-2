@@ -34,14 +34,15 @@ public class Album {
 		return year;
 	}
 	
-	public List<String> getSongs(){
+	public List<String> getSongTitles(){
 		return new ArrayList<>(songs);
 	}
 	
-	public void addSong(String songTitle) {
+
+	public void addSongTitle(String songTitle) {
 		songs.add(songTitle);
 	}
-	
+	 
 	public int getNumOfSongs() {
 		return songs.size();
 	}
