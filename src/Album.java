@@ -35,11 +35,12 @@ public class Album {
 	public List<String> getSongTitles(){
 		return new ArrayList<>(songs);
 	}
-	
+  
 
 	public void addSongTitle(String songTitle) {
 		songs.add(songTitle);
 	}
+
 	 
 	public int getNumOfSongs() {
 		return songs.size();

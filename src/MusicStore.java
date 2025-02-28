@@ -32,6 +32,7 @@ public class MusicStore {
                 }
             } 
             scanner.close();
+
     }
 
     // Load a specific album from its file
