@@ -1,4 +1,4 @@
-//package src;
+package src;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,6 +36,7 @@ class PlaylistTest {
 		assertEquals(length, playlist1.getSongAmt());
 		
 		Song song2 = new Song("19", "Adele", "Chasing Pavements", "Pop", 2008);
+		playlist1.addSong(song2);
 		length = playlist1.getSongAmt();
 		playlist1.removeSong("19", "Kendrick Lamar");
 		assertEquals(length, playlist1.getSongAmt());

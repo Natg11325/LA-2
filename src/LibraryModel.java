@@ -1,4 +1,4 @@
-//package src;
+package src;
 import java.util.ArrayList;
 import java.util.List;
  
@@ -186,6 +186,71 @@ public class LibraryModel {
     	}
     	return results;
     }
+    
+ // Search for songs by title in the music store
+    public List<Song> searchStoreSongsWithTitle(String title) {
+        return musicStore.searchSongsWithTitle(title);
+    }
+    
+    
+    // Search for songs by artist in the music store
+    public List<Song> searchStoreSongsWithArtist(String artist) {
+        return musicStore.searchSongsWithArtist(artist);
+    }
+    
+    
+    // Search for albums by title in the music store
+    public List<Album> searchStoreAlbumsWithTitle(String title) {
+        return musicStore.searchAlbumsWithTitle(title);
+    }
+    
+    
+    // Search for albums by artist in the music store
+    public List<Album> searchStoreAlbumsWithArtist(String artist) {
+        return musicStore.searchAlbumsWithArtist(artist);
+    }
+    
+ // Get all songs in the user's library
+    public List<Song> getAllLibrarySongs() {
+        return new ArrayList<>(myLibrarySongs);
+    }
+    
+    
+    // Get all albums in the user's library
+    public List<Album> getAllLibraryAlbums() {
+        return new ArrayList<>(myLibraryAlbums);
+    }
+    
+    
+    // Get all artists in the user's library
+    public List<String> getAllLibraryArtists() {
+        List<String> artists = new ArrayList<>();
+        for (Song song : myLibrarySongs) {
+            String artist = song.getArtist();
+            if (!artists.contains(artist)) {
+                artists.add(artist);
+            }
+        }
+        return artists;
+    }
+    
+    // Get all playlists
+    public List<Playlist> getAllPlaylists() {
+        return new ArrayList<>(playlists);
+    }
+    
+    
+    // Get all favorite songs
+    public List<Song> getFavoriteSongs() {
+        List<Song> favorites = new ArrayList<>();
+        for (Song song : myLibrarySongs) {
+            if (song.isFavorite()) {
+                favorites.add(song);
+            }
+        }
+       return favorites;
+    }
+    
 
     
 }
