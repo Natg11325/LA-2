@@ -162,7 +162,7 @@ public class LibraryModel {
     } 
     
     
-    public List<Album> searchLibAlbumWithTitle(String title){
+    public List<Album> searchLibAlbumsWithTitle(String title){
     	List<Album> results = new ArrayList<>();
     	String searchTitle = title.toLowerCase();
     	
