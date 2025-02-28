@@ -164,11 +164,11 @@ class TestLibraryModel {
         
         libraryModel.addAlbumToLibrary(albumTitle, songArtist);
         
-        List<Album> results = libraryModel.searchLibAlbumWithTitle(albumTitle);
+        List<Album> results = libraryModel.searchLibAlbumsWithTitle(albumTitle);
         assertFalse(results.isEmpty());
         assertEquals(albumTitle, results.get(0).getTitle());
         
-        results = libraryModel.searchLibAlbumWithTitle("title doesnt exist");
+        results = libraryModel.searchLibAlbumsWithTitle("title doesnt exist");
         assertTrue(results.isEmpty());
     }
     
