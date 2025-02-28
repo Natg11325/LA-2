@@ -1,5 +1,4 @@
 
-
 public class Song {
 	private String title;
 	private String artist;
@@ -66,9 +65,6 @@ public class Song {
         return title + " by " + artist + " from album " + album;
     }
     
-    /*
-     * This method overrides the equals method so that it compares 2 song objects.
-     * It does this by comparing the artist and the title. */
     @Override
     public boolean equals(Object other) {
     	Song otherSong = (Song) other;

@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class Album {
 	private String title;
 	private String artist;
@@ -47,7 +45,6 @@ public class Album {
 		return songs.size();
 	}
 		
-//Album Title,Artist,Genre,Year
     @Override
     public String toString() {
         return "Album: " + title + ", " + artist + ", " + genre + ", " + year;

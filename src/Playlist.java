@@ -10,7 +10,7 @@ public class Playlist {
 		this.name = name;
 		this.songs = new ArrayList<>();
 	}
-	
+	 
 	public String getName() {
 		return this.name;
 	}
@@ -39,10 +39,9 @@ public class Playlist {
 		}
 	}
 	
-	// added
-    	@Override
-    	public String toString() {
-        	return "Playlist: " + name + ", " + songs.size() + " songs";
-    	}
+	@Override
+	public String toString() {
+    	return "Playlist: " + name + ", " + songs.size() + " songs";
+	}
 	
 }

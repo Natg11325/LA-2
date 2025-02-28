@@ -28,7 +28,7 @@ public class SongTest {
         song.setFavorite(false);
         assertFalse(song.isFavorite());
     }
-    
+     
     @Test
     public void testSetRatingValid() {
         Song song = new Song("19", "Adele", "Chasing Pavements", "Pop", 2008);
