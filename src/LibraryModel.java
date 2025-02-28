@@ -78,7 +78,7 @@ public class LibraryModel {
             // Find the song in the user's library
             Song song = null;
             for (Song currSong : myLibrarySongs) {
-                if (currSong.getTitle().equals(songTitle) && currSong.getArtist().equals(artist)) {
+                if (currSong.getTitle().toLowerCase().equals(songTitle.toLowerCase()) && currSong.getArtist().toLowerCase().equals(artist.toLowerCase())) {
                     song = currSong;
                     break;
                 }
