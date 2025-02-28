@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class Album {
 	private String title;
 	private String artist;
@@ -34,27 +32,20 @@ public class Album {
 		return year;
 	}
 	
-	public List<String> getSongs(){
-		return new ArrayList<>(songs);
-	}
-
 	public List<String> getSongTitles(){
 		return new ArrayList<>(songs);
 	}
-	
-	public void addSong(String songTitle) {
-		songs.add(songTitle);
-	}
+  
 
 	public void addSongTitle(String songTitle) {
 		songs.add(songTitle);
 	}
+
 	 
 	public int getNumOfSongs() {
 		return songs.size();
 	}
 		
-//Album Title,Artist,Genre,Year
     @Override
     public String toString() {
         return "Album: " + title + ", " + artist + ", " + genre + ", " + year;

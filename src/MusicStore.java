@@ -31,7 +31,7 @@ public class MusicStore {
                     loadAlbumFromFile(filename);
                 }
             } 
-	scanner.close();
+            scanner.close();
 
     }
 
@@ -183,4 +183,3 @@ public class MusicStore {
     }
 
 }
-
