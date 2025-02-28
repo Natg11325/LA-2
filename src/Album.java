@@ -37,6 +37,10 @@ public class Album {
 	public List<String> getSongs(){
 		return new ArrayList<>(songs);
 	}
+
+	public List<String> getSongTitles(){
+		return new ArrayList<>(songs);
+	}
 	
 	public void addSong(String songTitle) {
 		songs.add(songTitle);
