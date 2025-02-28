@@ -31,6 +31,8 @@ public class MusicStore {
                     loadAlbumFromFile(filename);
                 }
             } 
+	scanner.close();
+
     }
 
     // Load a specific album from its file
