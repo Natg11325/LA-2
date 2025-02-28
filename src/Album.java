@@ -45,7 +45,11 @@ public class Album {
 	public void addSong(String songTitle) {
 		songs.add(songTitle);
 	}
-	
+
+	public void addSongTitle(String songTitle) {
+		songs.add(songTitle);
+	}
+	 
 	public int getNumOfSongs() {
 		return songs.size();
 	}
