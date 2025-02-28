@@ -16,7 +16,7 @@ class AlbumTest {
         assertEquals(2008, album.getYear());
         assertEquals(0, album.getNumOfSongs());
     }
-    
+     
     @Test
     public void testGetTitle() {
         Album album = new Album("19", "Adele", "Pop", 2008);
