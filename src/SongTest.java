@@ -1,4 +1,4 @@
-//package src;
+package src;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,7 +77,7 @@ public class SongTest {
     
     @Test
     public void testToString() {
-        Song song = new Song("19", "Adele", "Chasing Pavements", "Pop", 2008);
+        Song song = new Song("Chasing Pavements", "Adele", "19", "Pop", 2008);
  
         String expected = "Chasing Pavements by Adele from album 19";
         assertEquals(expected, song.toString());
@@ -99,5 +99,15 @@ public class SongTest {
         // Verify that the rating was set and the favorite status remained true
         assertEquals(Integer.valueOf(3), song.getRating());
         assertTrue(song.isFavorite());
+    }
+    
+    @Test
+    public void test_equals() {
+    	Song song = new Song("Chasing Pavements", "Adele", "19", "Pop", 2008);
+    	Song song2 = new Song("Daydreamer", "Adele", "19", "Pop", 2008);
+    	assertFalse(song.equals(song2));
+    	
+    	Song song3 = new Song("Chasing Pavements", "Adele", "19", "Pop", 2008);
+    	assertEquals(song, song3);
     }
 }
