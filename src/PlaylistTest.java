@@ -1,4 +1,4 @@
-package src;
+//package src;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Test;
 
 class PlaylistTest {
 
-//	@Test
-//	void test() {
-//		fail("Not yet implemented");
-//	}
-	
+
 	@Test
 	public void test_getName() {
 		Playlist playlist1 = new Playlist("Play list one");
