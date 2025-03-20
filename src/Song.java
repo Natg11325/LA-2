@@ -1,4 +1,4 @@
-//package src;
+package src;
 public class Song {
 	private String title;
 	private String artist;
