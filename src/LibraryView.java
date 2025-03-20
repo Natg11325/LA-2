@@ -223,6 +223,7 @@ public class LibraryView {
         System.out.println("\nManage Songs:");
         System.out.println("1. Mark a song as favorite");
         System.out.println("2. Rate a song");
+        //play a song
         System.out.println("3. Back to main menu");
         
         System.out.print("Enter your choice: ");
@@ -235,11 +236,13 @@ public class LibraryView {
                 rateSong();
                 break;
             case "3":
-                break;
+                break; //case 4 would be to play a song
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
         }
     }
+    
+    //method to play a song. May be similiar to rateSongs where you enter a song to play.
 
 // THIS POINT FORWARD IS AI GENERATED ===================================================================
     
