@@ -17,6 +17,24 @@ class TestLibraryModel {
 		assertNotNull(myModel); //verify that constructor works
 	}
 	
+	
+	@Test
+	public void test_hasSong() throws FileNotFoundException{
+		MusicStore musicStore = new MusicStore();
+		LibraryModel libraryModel = new LibraryModel(musicStore);
+		// Get the first song from the allSongs list from music store
+        List<Song> allSongs = musicStore.getAllSongs();
+        assertFalse(allSongs.isEmpty());
+        // get the title and artist from that song
+        String songTitle = allSongs.get(0).getTitle();
+        String songArtist = allSongs.get(0).getArtist();
+        String songTitle2 = allSongs.get(0).getTitle();
+        
+        // Add the song to the library
+        libraryModel.addSongToLibrary(songTitle, songArtist);
+        assertTrue(libraryModel.hasSong(songTitle, songArtist));
+	}
+	
 	@Test
 	public void test_addSongToLibrary() throws FileNotFoundException {
 		MusicStore myStore = new MusicStore();

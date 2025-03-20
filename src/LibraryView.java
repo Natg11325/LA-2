@@ -59,7 +59,7 @@ public class LibraryView {
         System.out.println("3. Add to My Library");
         System.out.println("4. Display Lists");
         System.out.println("5. Create/Change Playlist");
-        System.out.println("6. Manage Songs (Rate/Favorite)");
+        System.out.println("6. Manage Songs (Rate/Favorite/Play)");
         System.out.println("7. Exit");
     }
  
@@ -223,8 +223,8 @@ public class LibraryView {
         System.out.println("\nManage Songs:");
         System.out.println("1. Mark a song as favorite");
         System.out.println("2. Rate a song");
-        //play a song
-        System.out.println("3. Back to main menu");
+        System.out.println("3. Play a song.");
+        System.out.println("4. Back to main menu");
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();
@@ -236,13 +236,33 @@ public class LibraryView {
                 rateSong();
                 break;
             case "3":
-                break; //case 4 would be to play a song
+            	playSong();
+            	break;
+            case "4":
+                break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
         }
     }
     
-    //method to play a song. May be similiar to rateSongs where you enter a song to play.
+    //method to play a song. May be similar to rateSongs where you enter a song to play.
+    private void playSong() {
+    	System.out.print("Enter the song title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter the artist name: ");
+        String artist = scanner.nextLine();
+            
+        // Calls the model to rate the specified song with the provided rating
+        boolean success = model.hasSong(title, artist);
+            
+         // The rateSong method will return a boolean which tells you if it was successful or not
+        if (success) {
+            // if successful, prints a message saying so.
+        	System.out.println("Now playing: " + title + ", by " + artist);
+        } else {
+        	 System.out.println("Failed to play song. The song might not exist in your library.");
+           }
+    }
 
 // THIS POINT FORWARD IS AI GENERATED ===================================================================
     
