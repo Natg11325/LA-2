@@ -1,67 +1,147 @@
-package src;
 import java.util.List;
 import java.util.Scanner;
 
 public class LibraryView {
     private LibraryModel model;
     private Scanner scanner;
+    private ManageAccounts manageAccounts;
+    private Account currentAccount;
 
-    public LibraryView(LibraryModel model) {
-        this.model = model;
+    public LibraryView(MusicStore musicStore, ManageAccounts manageAccounts) {
+        this.model = null;
         this.scanner = new Scanner(System.in);
+        this.manageAccounts = manageAccounts;
     }
 
-    // Start the application
     public void start() {
         boolean running = true;
         
         System.out.println("Welcome to the Music Library Application!");
         
         while (running) {
-            mainMenu();
-            System.out.print("Enter your choice: ");
-            String choice = scanner.nextLine();
-            
-            switch (choice) {
-                case "1":
-                    searchMusicStoreOptions();
-                    break;
-                case "2":
-                    searchLibraryOptions();
-                    break;
-                case "3":
-                    addToLibraryOptions();
-                    break;
-                case "4":
-                    displayListsOptions();
-                    break;
-                case "5":
-                    playlistOptions();
-                    break;
-                case "6":
-                    manageSongsOptions();
-                    break;
-                case "7":
-                    System.out.println("Goodbye!");
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice, choose again.");
+            if (currentAccount == null) {
+                showLoginMenu();
+            } else {
+                mainMenu();
+                System.out.print("Enter your choice: ");
+                String choice = scanner.nextLine();
+                
+                switch (choice) {
+                    case "1":
+                        searchMusicStoreOptions();
+                        break;
+                    case "2":
+                        searchLibraryOptions();
+                        break;
+                    case "3":
+                        addToLibraryOptions();
+                        break;
+                    case "4":
+                        displayListsOptions();
+                        break;
+                    case "5":
+                        playlistOptions();
+                        break;
+                    case "6":
+                        manageSongsOptions();
+                        break;
+                    case "7":
+                        logout();
+                        break;
+                    case "8":
+                        System.out.println("Goodbye!");
+                        manageAccounts.saveAccounts();
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice, choose again.");
+                }
             }
         }
     }
 
+    // Show login menu
+    private void showLoginMenu() {
+        System.out.println("\nSelect an option:");
+        System.out.println("1. Login");
+        System.out.println("2. Make Account");
+        System.out.println("3. Exit");
+        
+        System.out.print("Enter your choice: ");
+        String choice = scanner.nextLine();
+        
+        switch (choice) {
+            case "1":
+                login();
+                break;
+            case "2":
+                makeAccount();
+                break;
+            case "3":
+                System.out.println("Goodbye!");
+                System.exit(0);
+                break;
+            default:
+                System.out.println("Invalid choice, choose again.");
+        }
+    }
+    
+    // Login process
+    private void login() {
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+        
+        Account account = manageAccounts.authenticateUser(username, password);
+        
+        if (account != null) {
+        	currentAccount = account;
+            model = account.getLibrary();
+            System.out.println("Hello again, " + username + "!");
+        } else {
+            System.out.println("Invalid username or password.");
+        }
+    }
+    
+    private void makeAccount() {
+        System.out.print("Enter new username: ");
+        String username = scanner.nextLine();
+        
+        System.out.print("Enter new password: ");
+        String password = scanner.nextLine();
+        
+        boolean success = manageAccounts.makeAccount(username, password);
+        
+        if (success) {
+            System.out.println("Account made successfully! Please log in.");
+        } else {
+            System.out.println("Username already exists. Try again.");
+        }
+    }
+    
+    // Logout
+    private void logout() {
+    	manageAccounts.saveAccounts(); // Save current user's data
+        currentAccount = null;
+        model = null;
+        System.out.println("Logged out successfully.");
+    }
+
     // helper method that displays the main menu
     private void mainMenu() {
-        System.out.println("\nMain Menu:");
+        System.out.println("\nMain Menu (Logged in as " + currentAccount.getUsername() + "):");
         System.out.println("1. Search Music Store");
         System.out.println("2. Search My Library");
         System.out.println("3. Add to My Library");
         System.out.println("4. Display Lists");
         System.out.println("5. Create/Change Playlist");
         System.out.println("6. Manage Songs (Rate/Favorite)");
-        System.out.println("7. Exit");
+        System.out.println("7. Logout");
+        System.out.println("8. Save Account Changes");
     }
+    
  
     // If you chose Search Music Store these are your options
     private void searchMusicStoreOptions() {
