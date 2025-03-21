@@ -357,10 +357,9 @@ public class LibraryModel {
             }
         }
         
-        // If album was found, remove it
+        // If album was found then remove it
         if (albumToRemove != null) {
-            myLibraryAlbums.remove(albumToRemove);
-            
+            myLibraryAlbums.remove(albumToRemove); 
             // Get all songs from this album
             List<Song> songsToRemove = new ArrayList<>();
             for (Song song : myLibrarySongs) {
@@ -369,9 +368,8 @@ public class LibraryModel {
                 }
             }
             
-            // Remove all songs that belong exclusively to this album
+            // Remove all songs that belong to that album
             for (Song song : songsToRemove) {
-                // Check if this song appears in any other albums              
                     // Also remove the song from all playlists
                     for (Playlist playlist : playlists) {
                         playlist.removeSong(song.getTitle(), song.getArtist());
