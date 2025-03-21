@@ -1,3 +1,4 @@
+//package src;
 import java.util.ArrayList;
 import java.util.List;
  
@@ -77,7 +78,7 @@ public class LibraryModel {
             // Find the song in the user's library
             Song song = null;
             for (Song currSong : myLibrarySongs) {
-                if (currSong.getTitle().equals(songTitle) && currSong.getArtist().equals(artist)) {
+                if (currSong.getTitle().toLowerCase().equals(songTitle.toLowerCase()) && currSong.getArtist().toLowerCase().equals(artist.toLowerCase())) {
                     song = currSong;
                     break;
                 }
@@ -153,7 +154,7 @@ public class LibraryModel {
     	String searchArtist = artist.toLowerCase();
     	
     	for(Song song : myLibrarySongs) {
-    		if(song.getTitle().toLowerCase().equals(searchArtist)) {
+    		if(song.getArtist().toLowerCase().equals(searchArtist)) {
     			results.add(song);
     		}
     	}
@@ -161,7 +162,7 @@ public class LibraryModel {
     } 
     
     
-    public List<Album> searchLibAlbumWithTitle(String title){
+    public List<Album> searchLibAlbumsWithTitle(String title){
     	List<Album> results = new ArrayList<>();
     	String searchTitle = title.toLowerCase();
     	
@@ -179,13 +180,207 @@ public class LibraryModel {
     	String searchArtist = artist.toLowerCase();
     	
     	for(Album album : myLibraryAlbums) {
-    		if(album.getTitle().toLowerCase().equals(searchArtist)) {
+    		if(album.getArtist().toLowerCase().equals(searchArtist)) {
     			results.add(album);
     		}
     	}
     	return results;
     }
+    
+ // Search for songs by title in the music store
+    public List<Song> searchStoreSongsWithTitle(String title) {
+        return musicStore.searchSongsWithTitle(title);
+    }
+    
+    
+    // Search for songs by artist in the music store
+    public List<Song> searchStoreSongsWithArtist(String artist) {
+        return musicStore.searchSongsWithArtist(artist);
+    }
+    
+    
+    // Search for albums by title in the music store
+    public List<Album> searchStoreAlbumsWithTitle(String title) {
+        return musicStore.searchAlbumsWithTitle(title);
+    }
+    
+    
+    // Search for albums by artist in the music store
+    public List<Album> searchStoreAlbumsWithArtist(String artist) {
+        return musicStore.searchAlbumsWithArtist(artist);
+    }
+    
+ // Get all songs in the user's library
+    public List<Song> getAllLibrarySongs() {
+        return new ArrayList<>(myLibrarySongs);
+    }
+    
+    
+    // Get all albums in the user's library
+    public List<Album> getAllLibraryAlbums() {
+        return new ArrayList<>(myLibraryAlbums);
+    }
+    
+    
+    // Get all artists in the user's library
+    public List<String> getAllLibraryArtists() {
+        List<String> artists = new ArrayList<>();
+        for (Song song : myLibrarySongs) {
+            String artist = song.getArtist();
+            if (!artists.contains(artist)) {
+                artists.add(artist);
+            }
+        }
+        return artists;
+    }
+    
+    // Get all playlists
+    public List<Playlist> getAllPlaylists() {
+        return new ArrayList<>(playlists);
+    }
+    
+    
+    // Get all favorite songs
+    public List<Song> getFavoriteSongs() {
+        List<Song> favorites = new ArrayList<>();
+        for (Song song : myLibrarySongs) {
+            if (song.isFavorite()) {
+                favorites.add(song);
+            }
+        }
+       return favorites;
+    }
+    
 
+    //Returns a list of songs in the library sorted by title in ascending order
+    public List<Song> songsSortedByTitle() {
+        List<Song> sortedSongs = new ArrayList<>(myLibrarySongs);
+        
+        // the songs are sorted using bubble sort
+        // every time it iterates through the list the largest unsorted song moves up to its correct position
+        for (int i = 0; i < sortedSongs.size() - 1; i++) {
+        	// each iteration reduces the number of comparisons because the last i items are already sorted
+            for (int j = 0; j < sortedSongs.size() - i - 1; j++) {
+                String title1 = sortedSongs.get(j).getTitle().toLowerCase();
+                String title2 = sortedSongs.get(j + 1).getTitle().toLowerCase();
+                // compared the two lower case titles alphabetically
+                if (title1.compareTo(title2) > 0) {
+                    // Swap elements if they are in wrong order
+                    Song temp = sortedSongs.get(j); // temp variable that holds the first song during swap
+                    sortedSongs.set(j, sortedSongs.get(j + 1));
+                    sortedSongs.set(j + 1, temp);
+                }
+            }
+        }
+        return sortedSongs;
+    }
+
+   
+     // Returns a list of songs in the library sorted by artist in ascending order
+    public List<Song> songsSortedByArtist() {
+        List<Song> sortedSongs = new ArrayList<>(myLibrarySongs);
+        
+        // also uses bubble sort
+        for (int i = 0; i < sortedSongs.size() - 1; i++) {
+            for (int j = 0; j < sortedSongs.size() - i - 1; j++) {
+                String artist1 = sortedSongs.get(j).getArtist().toLowerCase();
+                String artist2 = sortedSongs.get(j + 1).getArtist().toLowerCase();
+                
+                if (artist1.compareTo(artist2) > 0) {
+                    Song temp = sortedSongs.get(j);
+                    sortedSongs.set(j, sortedSongs.get(j + 1));
+                    sortedSongs.set(j + 1, temp);
+                }
+            }
+        }    
+        return sortedSongs;
+    }
+
+     // Returns a list of songs in the library sorted by rating in ascending order
+    public List<Song> songsSortedByRating() {
+        // new list that only includes songs with non-null ratings
+        List<Song> songsWithRatings = new ArrayList<>();
+        
+        // only sort songs with ratings
+        for (Song song : myLibrarySongs) {
+            if (song.getRating() != null) {
+                songsWithRatings.add(song);
+            }
+        }
+        
+        for (int i = 0; i < songsWithRatings.size() - 1; i++) {
+            for (int j = 0; j < songsWithRatings.size() - i - 1; j++) {
+                Integer rating1 = songsWithRatings.get(j).getRating();
+                Integer rating2 = songsWithRatings.get(j + 1).getRating();
+                
+                if (rating1 < rating2) {
+                    Song temp = songsWithRatings.get(j);
+                    songsWithRatings.set(j, songsWithRatings.get(j + 1));
+                    songsWithRatings.set(j + 1, temp);
+                }
+            }
+        }
+        return songsWithRatings;
+    }
+     
+    public boolean removeSongFromLibrary(String title, String artist) {
+        // Find the song in the user's library
+        Song songToRemove = null;
+        for (Song song : myLibrarySongs) {
+            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+                songToRemove = song;
+                break;
+            }
+        }
+        
+        // If song was found, remove it
+        if (songToRemove != null) {
+            myLibrarySongs.remove(songToRemove);
+            
+            // Also remove the song from all playlists
+            for (Playlist playlist : playlists) {
+                playlist.removeSong(title, artist);
+            }
+            
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean removeAlbumFromLibrary(String title, String artist) {
+        // Find the album in the user's library
+        Album albumToRemove = null;
+        for (Album album : myLibraryAlbums) {
+            if (album.getTitle().equals(title) && album.getArtist().equals(artist)) {
+                albumToRemove = album;
+                break;
+            }
+        }
+        
+        // If album was found, remove it
+        if (albumToRemove != null) {
+            myLibraryAlbums.remove(albumToRemove);
+            
+            // Get all songs from this album
+            List<Song> songsToRemove = new ArrayList<>();
+            for (Song song : myLibrarySongs) {
+                if (song.getAlbum().equals(title) && song.getArtist().equals(artist)) {
+                    songsToRemove.add(song);
+                }
+            }
+            
+            // Remove all songs that belong exclusively to this album
+            for (Song song : songsToRemove) {
+                // Check if this song appears in any other albums              
+                    // Also remove the song from all playlists
+                    for (Playlist playlist : playlists) {
+                        playlist.removeSong(song.getTitle(), song.getArtist());
+                    }
+                }
+            return true;
+        }
+        return false;
+    }
     
 }
   
