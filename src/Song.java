@@ -20,9 +20,6 @@ public class Song {
         this.plays = 0;
     }
     
-    public int getPlays() {
-     	return 0 + plays;
-     }
 
     public String getTitle() {
         return title;
