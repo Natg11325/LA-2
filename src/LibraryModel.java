@@ -611,6 +611,7 @@ public class LibraryModel {
                     for (Playlist playlist : playlists) {
                         playlist.removeSong(song.getTitle(), song.getArtist());
                     }
+                    myLibrarySongs.remove(song);
                 }
             return true;
         }
