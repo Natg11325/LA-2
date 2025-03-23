@@ -15,7 +15,7 @@ public class LibraryView {
         this.manageAccounts = manageAccounts;
     }
 
-    public void start() {
+    public void start() throws FileNotFoundException {
         boolean running = true;
         
         System.out.println("Welcome to the Music Library Application!");
@@ -59,7 +59,7 @@ public class LibraryView {
     }
 
     // Show login menu
-    private void showLoginMenu() {
+    private void showLoginMenu() throws FileNotFoundException{
         System.out.println("\nSelect an option:");
         System.out.println("1. Login");
         System.out.println("2. Make Account");
@@ -103,7 +103,7 @@ public class LibraryView {
         }
     }
     
-    private void makeAccount() {
+    private void makeAccount() throws FileNotFoundException{
         System.out.print("Enter new username: ");
         String username = scanner.nextLine();
         
