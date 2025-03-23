@@ -53,7 +53,7 @@ public class ManageAccounts {
     }
     
     // Make a new account
-    public boolean makeAccount(String username, String password) {
+    public boolean makeAccount(String username, String password) throws FileNotFoundException {
         // Check if username already exists
         if (accounts.containsKey(username)) {
             return false;
@@ -67,7 +67,7 @@ public class ManageAccounts {
         LibraryModel library = new LibraryModel(musicStore);
         
         // Create user and add to the hash map
-        Account account = new Account(username, passwordHash, salt, library);
+        Account account = new Account(username, passwordHash, library, salt);
         // Store user in HashMap with username as the key and the Account object as the value
         accounts.put(username, account);
         
@@ -89,7 +89,7 @@ public class ManageAccounts {
         // If an account is found, take the input password and the salt for that account and create a hash of the two combined
         String passwordHash = hashPassword(password, account.getSalt());
         // Compare the hash just created with the hash stored in the account, if the match its verified
-        if (passwordHash.equals(account.getPasswordHash())) {
+        if (passwordHash.equals(account.getPassword())) {
         	// Return Account object if hashes match
             return account;
         }
@@ -111,7 +111,7 @@ public class ManageAccounts {
             // Iterate through all accounts in the HashMap
             for (Account account : accounts.values()) {
             	 // Write the account info (username, password hash, and salt) into the file
-                writer.println(account.getUsername() + "," + account.getPasswordHash() + "," + account.getSalt());
+                writer.println(account.getUsername() + "," + account.getPassword() + "," + account.getSalt());
                 
                 // Save this accounts library, this is in the loop cause each account needs its library saved even if its empty
                 saveAccountLibrary(account);
