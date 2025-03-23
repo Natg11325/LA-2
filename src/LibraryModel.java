@@ -1,4 +1,4 @@
-//package src;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.List;
 import java.util.Queue;
  
 public class LibraryModel {
@@ -221,8 +222,9 @@ public class LibraryModel {
                 }
             }
         }
+
     }
-    
+  
     
     public boolean addSongToLibrary(String title, String artist) {
     	// Retrieve a song from the database by matching exact title and artist name
@@ -331,6 +333,29 @@ public class LibraryModel {
         }      
         return false;
     }
+    
+    public boolean playSong(String title, String artist) {
+    	for (Song song : myLibrarySongs) {
+            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+            	song.play();
+            	recentlyPlayedSongs.add(song);
+            	if(recentlyPlayedSongs.size() > 10) {
+            		recentlyPlayedSongs.remove();
+            	}
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean hasSong(String title, String artist) {
+    	for (Song song : myLibrarySongs) {
+            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     public boolean rateSong(String title, String artist, int rating) {
@@ -422,8 +447,7 @@ public class LibraryModel {
     public List<Album> searchStoreAlbumsWithArtist(String artist) {
         return musicStore.searchAlbumsWithArtist(artist);
     }
-    
-    // Get all songs in the user's library
+
     public List<Song> getAllLibrarySongs() {
         return new ArrayList<>(myLibrarySongs);
     }
@@ -458,6 +482,9 @@ public class LibraryModel {
     // Get only automatic playlists
     public List<Playlist> getAutoPlaylists() {
         return new ArrayList<>(automaticPlaylists.values());
+
+        //return new ArrayList<>(playlists);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+
     }
     
     
@@ -516,7 +543,6 @@ public class LibraryModel {
         }    
         return sortedSongs;
     }
-
     
      // Returns a list of songs in the library sorted by rating in ascending order
     public List<Song> songsSortedByRating() {
