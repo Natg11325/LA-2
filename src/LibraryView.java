@@ -55,7 +55,6 @@ public class LibraryView {
                 }
                 choice = null;
             }
-            choice = null;
         }
     }
 
