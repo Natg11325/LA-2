@@ -19,6 +19,7 @@ public class Song {
         this.rating = null; // this will be null until/ if the song is rated 
         this.plays = 0;
     }
+    
 
     public String getTitle() {
         return title;
@@ -67,8 +68,9 @@ public class Song {
     }
     
     public void play() {
-    	plays += 1;
-    }
+     	plays += 1;
+     }
+
 
     @Override
     public String toString() {

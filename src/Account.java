@@ -26,5 +26,9 @@ public class Account {
 	public String getSalt() {
 		return this.salt;
 	}
+
+	public LibraryModel getLibrary() {
+        	return library;
+    }
 	
 }
