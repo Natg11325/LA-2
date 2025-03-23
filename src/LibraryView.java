@@ -8,7 +8,7 @@ public class LibraryView {
     private Scanner scanner;
     private ManageAccounts manageAccounts;
     private Account currentAccount;
-
+ 
     public LibraryView(MusicStore musicStore, ManageAccounts manageAccounts) {
         this.model = null;
         this.scanner = new Scanner(System.in);
@@ -45,19 +45,15 @@ public class LibraryView {
                         playlistOptions();
                         break;
                     case "6":
-                        manageSongsOptions();
+                    	manageSongsAlbumsOptions();
                         break;
                     case "7":
                         logout();
                         break;
-                    case "8":
-                        System.out.println("Goodbye!");
-                        manageAccounts.saveAccounts();
-                        running = false;
-                        break;
                     default:
                         System.out.println("Invalid choice, choose again.");
                 }
+                choice = null;
             }
             choice = null;
         }
@@ -140,9 +136,8 @@ public class LibraryView {
         System.out.println("3. Add to My Library");
         System.out.println("4. Display Lists");
         System.out.println("5. Create/Change Playlist");
-        System.out.println("6. Manage Songs (Rate/Favorite/Play)");
+        System.out.println("6. Manage Songs/Albums (Rate/Favorite)");
         System.out.println("7. Logout");
-        System.out.println("8. Save Account Changes");
     }
     
  
@@ -245,10 +240,12 @@ public class LibraryView {
         System.out.println("5. List favorite songs");
         System.out.println("6. List most recently played songs.");
         System.out.println("7. List most played songs.");
-        System.out.println("8. Back to main menu");
+        System.out.println("8. List sorted songs");
+        System.out.println("9. Back to main menu");
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();
+
         switch (choice) {
             case "1":
                 displayAllSongs();
@@ -267,16 +264,44 @@ public class LibraryView {
                 break;
             case "6":
             	displayRecentlyPlayed();
-            	break;
+                break;
             case "7":
             	displayMostPlayed();
             	break;
             case "8":
+                displaySortedSongsOptions();
                 break;
+            case "9":
+            	break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
         }
     }
+
+    
+    private void displaySortedSongsOptions() {
+        System.out.println("\nDisplay Sorted Songs:");
+        System.out.println("1. Sort by title");
+        System.out.println("2. Sort by artist");
+        System.out.println("3. Sort by rating");
+        System.out.println("4. Back to main menu");
+        
+        System.out.print("Enter your choice: ");
+        String choice = scanner.nextLine();
+        
+        if (choice.equals("1")) {
+            displaySongsSortedByTitle();
+        } else if (choice.equals("2")) {
+            displaySongsSortedByArtist();
+        } else if (choice.equals("3")) {
+            displaySongsSortedByRating();
+        } else if (choice.equals("4")) {
+            // Return to main menu
+        } else {
+            System.out.println("Invalid choice. Returning to main menu.");
+        }
+    }
+
 
     // If you chose Create/Change Playlist, these are your options
     private void playlistOptions() {
@@ -285,7 +310,8 @@ public class LibraryView {
         System.out.println("2. Add a song to a playlist");
         System.out.println("3. Remove a song from a playlist");
         System.out.println("4. Open a playlist");
-        System.out.println("5. Back to main menu");
+        System.out.println("5. Open automatic playlists");
+        System.out.println("6. Back to main menu");
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine(); 
@@ -303,26 +329,61 @@ public class LibraryView {
                 viewPlaylist();
                 break;
             case "5":
+                viewAutomaticPlaylists();
                 break;
+            case "6":
+            	break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
         }
     }
+    
+    
+    private void viewAutomaticPlaylists() {
+        System.out.println("\nAutomatic Playlists:");
+        System.out.println("1. Favorites Playlist");
+        System.out.println("2. Top Rated Playlist");
+        System.out.println("3. Genre Playlists");
+        System.out.println("4. Back to main menu");
+        
+        System.out.print("Enter your choice: ");
+        String choice = scanner.nextLine();
+        
+        switch (choice) {
+            case "1":
+                openAutoPlaylist("Automatic Favorites: ");
+                break;
+            case "2":
+                openAutoPlaylist("Automatic Top Rated: ");
+                break;
+            case "3":
+                viewGenrePlaylists();
+                break;
+            case "4":
+                break;
+            default:
+                System.out.println("Invalid choice. Returning to playlist menu.");
+        }
+    }
 
     // If you chose Manage songs, these are your options
-    private void manageSongsOptions() {
-        System.out.println("\nManage Songs:");
+    private void manageSongsAlbumsOptions() {
+        System.out.println("\nManage Songs/Albums:");
         System.out.println("1. Mark a song as favorite");
         System.out.println("2. Rate a song");
         System.out.println("3. Play a song.");
-        System.out.println("4. Back to main menu");
+        // added to for the remove song and album function
+        System.out.println("4. Remove a song from library");
+        System.out.println("5. Remove an album from library");
+        System.out.println("6. Back to main menu");
+
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();
         switch (choice) {
             case "1":
                 markSongAsFavorite();
-                break;
+                break; 
             case "2":
                 rateSong();
                 break;
@@ -330,7 +391,13 @@ public class LibraryView {
             	playSong();
             	break;
             case "4":
-                break;
+           	  removeSongFromLibrary();
+              break; //case 4 would be to play a song
+            case "5":
+            	removeAlbumFromLibrary();
+            	break;
+            case "6":
+            	break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
         }
@@ -450,6 +517,8 @@ public class LibraryView {
 
 // THIS POINT FORWARD IS AI GENERATED ===================================================================
     
+ 
+     
     // Search for a song by title in the store
     private void searchStoreSongByTitle() {
         System.out.print("Enter the song title to search for: ");
@@ -541,7 +610,7 @@ public class LibraryView {
                 }
                 System.out.println();
             }
-        }
+        } 
     }
     
     // Search for a song by title in the library
@@ -1002,6 +1071,216 @@ public class LibraryView {
             }
         } catch (NumberFormatException e) {
         	// If the user's input cannot be parsed as an integer, displays an error message
+            System.out.println("Invalid input. Please enter a number.");
+        }
+    }
+    
+    //Displays all songs sorted by title
+    private void displaySongsSortedByTitle() {
+        List<Song> songs = model.songsSortedByTitle();
+        
+        if (songs.isEmpty()) {
+            System.out.println("Your library has no songs.");
+        } else {
+            System.out.println("Songs in your library sorted by title: ");
+            for (int i = 0; i < songs.size(); i++) {
+                Song song = songs.get(i);
+                System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist());
+            }
+        }
+    }
+
+
+    // Displays all songs sorted by artist
+    private void displaySongsSortedByArtist() {
+        List<Song> songs = model.songsSortedByArtist();
+        
+        if (songs.isEmpty()) {
+            System.out.println("Your library has no songs.");
+        } else {
+            System.out.println("Songs in your library sorted by artist: ");
+            for (int i = 0; i < songs.size(); i++) {
+                Song song = songs.get(i);
+                System.out.println((i + 1) + ". " + song.getArtist() + " - " + song.getTitle());
+            }
+        }
+    }
+
+
+    // Displays all songs sorted by rating
+    private void displaySongsSortedByRating() {
+        List<Song> songs = model.songsSortedByRating();
+        
+        if (songs.isEmpty()) {
+            System.out.println("Your library has no songs.");
+        } else {
+            System.out.println("Songs in your library sorted by rating: ");
+            for (int i = 0; i < songs.size(); i++) {
+                Song song = songs.get(i);
+                System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist() + " - Rating: " + song.getRating() + "/5");
+            }
+        }
+    } 
+    
+    
+    // Method for removing a song from the library
+    private void removeSongFromLibrary() {
+        // Display all songs in the library first
+        List<Song> songs = model.getAllLibrarySongs();
+        
+        if (songs.isEmpty()) {
+            System.out.println("Your library has no songs to remove.");
+            return;
+        }
+        
+        System.out.println("\nAll songs in your library:");
+        for (int i = 0; i < songs.size(); i++) {
+            Song song = songs.get(i);
+            System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist() + " from album " + song.getAlbum());
+        }
+        
+        System.out.print("\nEnter the number of the song you want to remove: ");
+        try {
+            int index = Integer.parseInt(scanner.nextLine()) - 1;
+            
+            if (index >= 0 && index < songs.size()) {
+                Song selectedSong = songs.get(index);
+                String title = selectedSong.getTitle();
+                String artist = selectedSong.getArtist();
+                
+                boolean success = model.removeSongFromLibrary(title, artist);
+                
+                if (success) {
+                    System.out.println("Song '" + title + "' by " + artist + " was successfully removed from your library.");
+                } else {
+                    System.out.println("Failed to remove the song from your library.");
+                }
+            } else {
+                System.out.println("Invalid song number. Please enter a number between 1 and " + songs.size() + ".");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+        }
+    }
+    
+    
+    // Method for removing an album from the library
+ // Method for removing an album from the library
+    private void removeAlbumFromLibrary() {
+        // Display all albums in the library first
+        List<Album> albums = model.getAllLibraryAlbums();
+        
+        if (albums.isEmpty()) {
+            System.out.println("Your library has no albums to remove.");
+            return;
+        }
+        
+        System.out.println("\nAll albums in your library:");
+        for (int i = 0; i < albums.size(); i++) {
+            Album album = albums.get(i);
+            System.out.println((i + 1) + ". " + album.getTitle() + " by " + album.getArtist() + " (" + album.getYear() + ") - " + album.getGenre());
+        }
+        
+        System.out.print("\nEnter the number of the album you want to remove: ");
+        try {
+            int index = Integer.parseInt(scanner.nextLine()) - 1;
+            
+            if (index >= 0 && index < albums.size()) {
+                Album selectedAlbum = albums.get(index);
+                String title = selectedAlbum.getTitle();
+                String artist = selectedAlbum.getArtist();
+                
+                // Removed the confirmation prompt
+                boolean success = model.removeAlbumFromLibrary(title, artist);
+                
+                if (success) {
+                    System.out.println("Album '" + title + "' by " + artist + " was successfully removed from your library.");
+                } else {
+                    System.out.println("Failed to remove the album from your library.");
+                }
+            } else {
+                System.out.println("Invalid album number. Please enter a number between 1 and " + albums.size() + ".");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+        }
+    }
+    
+    
+ // Method to open and display any automatic playlist by name
+    private void openAutoPlaylist(String playlistName) {
+        Playlist playlist = model.getPlaylistWithName(playlistName);
+        
+        if (playlist == null) {
+            System.out.println("Playlist not found.");
+            return;
+        }
+        
+        System.out.println(playlist.getName());
+        
+        List<Song> songs = playlist.getSongs();
+        
+        if (songs.isEmpty()) {
+            System.out.println("This playlist is empty.");
+        } else {
+            for (int i = 0; i < songs.size(); i++) {
+                Song song = songs.get(i);
+                System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist());
+                
+                // Show additional info for songs
+                if (song.isFavorite()) {
+                    System.out.println("   (Favorite)");
+                }
+                if (song.getRating() != null) {
+                    System.out.println("   Rating: " + song.getRating() + "/5");
+                }
+            }
+        }
+        
+        // Pause to allow user to read the playlist content
+        System.out.println("\nPress Enter to exit");
+        scanner.nextLine();
+    }
+
+    // Method to display all genre playlists
+    private void viewGenrePlaylists() {
+        // Get all auto playlists
+        List<Playlist> autoPlaylists = model.getAutoPlaylists();
+        
+        // Filter only genre playlists
+        List<Playlist> genrePlaylists = new ArrayList<>();
+        for (Playlist playlist : autoPlaylists) {
+            if (playlist.getName().startsWith("Automatic Genre: ")) {
+                genrePlaylists.add(playlist);
+            }
+        }
+        
+        if (genrePlaylists.isEmpty()) {
+            System.out.println("\nPress enter to exit");
+            scanner.nextLine();
+            return;
+        }
+        
+        System.out.println("\nGenre Playlists: ");
+        for (int i = 0; i < genrePlaylists.size(); i++) {
+            Playlist playlist = genrePlaylists.get(i);
+            String genreName = playlist.getName().substring("Automatic Genre: ".length());
+            System.out.println((i + 1) + ". " + genreName + " (" + playlist.getSongAmt() + " songs)");
+        }
+        
+        System.out.println((genrePlaylists.size() + 1) + ". Back to main menu");
+        
+        System.out.print("\nEnter your choice: ");
+        try {
+            int choice = Integer.parseInt(scanner.nextLine());
+            
+            if (choice >= 1 && choice <= genrePlaylists.size()) {
+                Playlist selectedPlaylist = genrePlaylists.get(choice - 1);
+                openAutoPlaylist(selectedPlaylist.getName());
+            } else if (choice != genrePlaylists.size() + 1) { // Not the "Back" option
+                System.out.println("Invalid choice.");
+            }
+        } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a number.");
         }
     }
