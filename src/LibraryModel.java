@@ -1,4 +1,4 @@
-//package src;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.List;
 import java.util.Queue;
  
 public class LibraryModel {
@@ -221,8 +222,9 @@ public class LibraryModel {
                 }
             }
         }
+
     }
-    
+  
     
     public boolean addSongToLibrary(String title, String artist) {
     	// Retrieve a song from the database by matching exact title and artist name
@@ -230,30 +232,79 @@ public class LibraryModel {
         // Only add the song if it exists in the store and isn't already in the user's library
         if (song != null && !myLibrarySongs.contains(song)) {
             myLibrarySongs.add(song);
+            // Get the album information from the song
+            String albumTitle = song.getAlbum();
+            // checks if the albums is already in the user's library
+            Album isInLibrary = null;
+    		for (Album album : myLibraryAlbums) {
+                if (album.getTitle().equals(albumTitle) && album.getArtist().equals(artist)) {
+                	isInLibrary = album;
+                    break;
+                }
+            }
+            
+    		// if not in the library
+    		if (isInLibrary == null) {
+                // Get the full album
+                Album storeAlbum = musicStore.getAlbumWithTitleAndArtist(albumTitle, artist);
+                if (storeAlbum != null) {
+                    // Creates a new album with the same data but an empty song list
+                	isInLibrary = new Album(albumTitle, artist, storeAlbum.getGenre(), storeAlbum.getYear());
+                    myLibraryAlbums.add(isInLibrary);
+                }
+            }
+    		
+    		// Adds the song title to the album if the album exists and doesn't already have this song in it
+            if (isInLibrary != null && !isInLibrary.getSongTitles().contains(title)) {
+            	isInLibrary.addSongTitle(title);
+            }
+            
             updateAutoPlaylists();
             return true;
         }
         return false;
     }
-
-
+    
     public boolean addAlbumToLibrary(String title, String artist) {
-    	// Retrieve an album from the database by matching exact title and artist name
-    	Album album = musicStore.getAlbumWithTitleAndArtist(title, artist);
-        // Only add the album if it exists in the store and isn't already in the user's library
-    	if (album != null && !myLibraryAlbums.contains(album)) {
-            myLibraryAlbums.add(album);
+        // Retrieve an album from the database by matching exact title and artist name
+        Album storeAlbum = musicStore.getAlbumWithTitleAndArtist(title, artist);
+        
+        // Only continue if the album exists in the store
+        if (storeAlbum != null) {
+            // Checks if this album already exists in the user's library, this helps avoid the album showing up twice
+            Album existingAlbum = null;
+            for (Album album : myLibraryAlbums) {
+                if (album.getTitle().equals(title) && album.getArtist().equals(artist)) {
+                    existingAlbum = album;
+                    break;
+                }
+            }
             
-            // Add all songs from the album to the user's library
+            // If album doesn't exist in library yet then add it
+            if (existingAlbum == null) {
+                // Create a new album with the same info as the store album
+                existingAlbum = new Album(title, artist, storeAlbum.getGenre(), storeAlbum.getYear());
+                myLibraryAlbums.add(existingAlbum);
+            }
+            
+            // Adds all songs from the store album to the library
             List<Song> albumSongs = musicStore.getSongsFromAlbum(title, artist);
-            // This is a last check for duplicates
+            boolean addedAtLeastOneSong = false;
+            
+            // Adds each song that isn't already in the library, makes sure to avoid duplicates
             for (Song song : albumSongs) {
                 if (!myLibrarySongs.contains(song)) {
                     myLibrarySongs.add(song);
+                    addedAtLeastOneSong = true;
+                    
+                    // Add the song title to the album if it's not already there
+                    if (!existingAlbum.getSongTitles().contains(song.getTitle())) {
+                        existingAlbum.addSongTitle(song.getTitle());
+                    }
                 }
             }
             updateAutoPlaylists();
-            return true;
+            return addedAtLeastOneSong || existingAlbum != null;
         } 
         return false;
     }
@@ -329,6 +380,17 @@ public class LibraryModel {
                 return true;
             }
         }      
+        return false;
+    }
+    
+
+    
+    public boolean hasSong(String title, String artist) {
+    	for (Song song : myLibrarySongs) {
+            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -422,8 +484,7 @@ public class LibraryModel {
     public List<Album> searchStoreAlbumsWithArtist(String artist) {
         return musicStore.searchAlbumsWithArtist(artist);
     }
-    
-    // Get all songs in the user's library
+
     public List<Song> getAllLibrarySongs() {
         return new ArrayList<>(myLibrarySongs);
     }
@@ -458,6 +519,9 @@ public class LibraryModel {
     // Get only automatic playlists
     public List<Playlist> getAutoPlaylists() {
         return new ArrayList<>(automaticPlaylists.values());
+
+        //return new ArrayList<>(playlists);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+
     }
     
     
@@ -516,7 +580,6 @@ public class LibraryModel {
         }    
         return sortedSongs;
     }
-
     
      // Returns a list of songs in the library sorted by rating in ascending order
     public List<Song> songsSortedByRating() {
@@ -598,6 +661,8 @@ public class LibraryModel {
                     for (Playlist playlist : playlists) {
                         playlist.removeSong(song.getTitle(), song.getArtist());
                     }
+                    myLibrarySongs.remove(song);
+
                 }
             return true;
         }
