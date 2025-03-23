@@ -7,6 +7,7 @@ public class Song {
 	private int year;
 	private boolean isAFavorite;
 	private Integer rating;
+	private int plays;
 
     public Song(String title, String artist, String album, String genre, int year) {
         this.title = title;
@@ -16,6 +17,7 @@ public class Song {
         this.year = year;
         this.isAFavorite = false; // this will switch to true if it is checked as a favorite
         this.rating = null; // this will be null until/ if the song is rated 
+        this.plays = 0;
     }
 
     public String getTitle() {
@@ -45,6 +47,10 @@ public class Song {
     public Integer getRating() {
         return rating;
     }
+    
+    public int getPlays() {
+    	return 0 + plays;
+    }
 
     public void setFavorite(boolean favorite) {
     	isAFavorite = favorite;
@@ -58,6 +64,10 @@ public class Song {
                 this.isAFavorite = true;
             }
         }
+    }
+    
+    public void play() {
+    	plays += 1;
     }
 
     @Override

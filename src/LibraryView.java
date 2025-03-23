@@ -1,4 +1,6 @@
 package src;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -48,6 +50,7 @@ public class LibraryView {
                 default:
                     System.out.println("Invalid choice, choose again.");
             }
+            choice = null;
         }
     }
 
@@ -160,7 +163,9 @@ public class LibraryView {
         System.out.println("3. List all albums");
         System.out.println("4. List all playlists");
         System.out.println("5. List favorite songs");
-        System.out.println("6. Back to main menu");
+        System.out.println("6. List most recently played songs.");
+        System.out.println("7. List most played songs.");
+        System.out.println("8. Back to main menu");
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();
@@ -181,6 +186,12 @@ public class LibraryView {
                 displayFavoriteSongs();
                 break;
             case "6":
+            	displayRecentlyPlayed();
+            	break;
+            case "7":
+            	displayMostPlayed();
+            	break;
+            case "8":
                 break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
@@ -245,20 +256,113 @@ public class LibraryView {
         }
     }
     
+    
+    private void createMostPlayedPlaylist() {
+//    	ArrayList<Song> songs = model.getMostPlayed();
+    	Song[] songs = model.getMostPlayed();
+//    	Object[] playedSongs = model.getrecentlyPlayed();
+    	if((songs[0] == null)) {
+    		return;
+    	}else {
+    		Playlist playlist = model.getPlaylistWithName("Most Played Songs");
+    		if(playlist == null) {
+    			//create the playlist if it does not exist.
+    			model.createPlaylist("Most Played Songs");
+    			playlist = model.getPlaylistWithName("Most Played Songs");
+    		}else {
+    			//delete the playlist and re create it to update it. 
+    			model.removePlaylist("Most Played Songs");
+    			model.createPlaylist("Most Played Songs");
+    			playlist = model.getPlaylistWithName("Most Played Songs");
+    		}
+    		for(int i = 0; i < songs.length; i++) {
+    			if(songs[i] == null) {
+    				break;
+    			}
+    			model.addSongToPlaylist(playlist.getName(), songs[i].getTitle(), songs[i].getArtist());
+    		}
+    	}
+    }
+    
+    private void displayMostPlayed() {
+//    	ArrayList<Song> songs = model.getMostPlayed();
+    	Song[] songs = model.getMostPlayed();
+//    	Object[] playedSongs = model.getrecentlyPlayed();
+    	if((songs[0] == null)) {
+    		System.out.println("You have not played any songs.");
+    	}else {
+    		System.out.println("Most played songs:");
+    		for(int i = 0; i < songs.length; i++) {
+    			if(songs[i] == null) {
+    				break;
+    			}
+    			System.out.println(songs[i].getTitle() + " by " + songs[i].getArtist());
+    		}
+//    		for(Song song : songs) {
+//    			System.out.println(((Song) song).getTitle() + " by " + ((Song) song).getArtist());
+//    		}
+    	}
+    }
+    
+    private void createRecentlyPlayedPlaylist() {
+    	Object[] songs = model.getrecentlyPlayed();
+    	if (songs == null) {
+    		return;
+    	}else {
+    		Playlist playlist = model.getPlaylistWithName("Recently Played Songs");
+    		if(playlist == null) {
+    			//create the playlist if it does not exist.
+    			model.createPlaylist("Recently Played Songs");
+    			playlist = model.getPlaylistWithName("Recently Played Songs");
+    		}else {
+    			//delete the playlist and re create it to update it. 
+    			model.removePlaylist("Recently Played Songs");
+    			model.createPlaylist("Recently Played Songs");
+    			playlist = model.getPlaylistWithName("Recently Played Songs");
+    		}
+    		for(int i = songs.length-1; i >= 0; i--) {
+    			 Object song = songs[i];
+    			 model.addSongToPlaylist(playlist.getName(), ((Song) song).getTitle(), ((Song) song).getArtist());
+    		}
+    	}
+    }
+    
+    private void displayRecentlyPlayed() {
+    	Object[] songs = model.getrecentlyPlayed();
+    	if (songs == null) {
+    		System.out.println("You have not played any songs.");
+    	}else {
+    		System.out.println("All songs that have been recently played:");
+    		for(int i = songs.length-1; i >= 0; i--) {
+    			 Object song = songs[i];
+                 System.out.println(((Song) song).getTitle() + " by " + ((Song) song).getArtist());
+    		}
+    	}
+    }
+    
     //method to play a song. May be similar to rateSongs where you enter a song to play.
     private void playSong() {
     	System.out.print("Enter the song title: ");
         String title = scanner.nextLine();
         System.out.print("Enter the artist name: ");
         String artist = scanner.nextLine();
+        
+        Playlist playlist = model.getPlaylistWithName("Most Played Songs");
+		if(playlist == null) {
+			model.createPlaylist("Most Played Songs");
+			playlist = model.getPlaylistWithName("Most Played Songs");
+		}
             
         // Calls the model to rate the specified song with the provided rating
-        boolean success = model.hasSong(title, artist);
+        boolean success = model.playSong(title, artist);
             
          // The rateSong method will return a boolean which tells you if it was successful or not
         if (success) {
             // if successful, prints a message saying so.
         	System.out.println("Now playing: " + title + ", by " + artist);
+        	model.addSongToPlaylist(playlist.getName(), title, artist);
+        	createMostPlayedPlaylist();
+        	createRecentlyPlayedPlaylist();
         } else {
         	 System.out.println("Failed to play song. The song might not exist in your library.");
            }

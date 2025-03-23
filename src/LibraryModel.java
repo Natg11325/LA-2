@@ -1,18 +1,81 @@
 package src;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
  
 public class LibraryModel {
     private MusicStore musicStore;
     private List<Song> myLibrarySongs;
     private List<Album> myLibraryAlbums;
     private List<Playlist> playlists;
+    private Queue<Song> recentlyPlayedSongs;
 
     public LibraryModel(MusicStore musicStore) {
         this.musicStore = musicStore;
         this.myLibrarySongs = new ArrayList<>();
         this.myLibraryAlbums = new ArrayList<>();
         this.playlists = new ArrayList<>();
+        this.recentlyPlayedSongs = new LinkedList<Song>();
+    }
+    
+    
+    public void sortByPlays(ArrayList<Song> songs) {
+    	Collections.sort(songs, new Comparator<>() {
+
+			@Override
+			public int compare(Song a, Song b) {
+				// TODO Auto-generated method stub
+				return b.getPlays() - a.getPlays();
+			}
+    		
+    	});
+    }
+    
+    public void removePlaylist(String name) {
+    	for(int i = 0; i < playlists.size(); i++) {
+    		if(playlists.get(i).getName() == name) {
+    			playlists.remove(i);
+    		}
+    	}
+    }
+    
+    public Song[] getMostPlayed(){
+    	ArrayList<Song> songs = new ArrayList<Song>();
+    	for(int i = 0; i < myLibrarySongs.size()-1; i++) {
+    		Song song = myLibrarySongs.get(i);
+    		if(song.getPlays() > 0) {
+    			songs.add(song);
+    		}
+    	}
+    	sortByPlays(songs);
+    	Song[] mostPlayed = new Song[10];
+    	for(int i = 0; i < 10 && i < songs.size(); i++) {
+    		mostPlayed[i] = songs.get(i);
+    	}
+    	return mostPlayed;
+    }
+    
+//    public ArrayList<Song> getMostPlayed() {
+//    	ArrayList<Song> songs = new ArrayList<Song>(myLibrarySongs);
+//    	sortByPlays(songs);
+////    	ArrayList<Song> songs = new ArrayList<Song>();
+////    	int i = 0;
+//    	for(int i = 0; i < 10 && i < myLibrarySongs.size(); i++) {
+//    		songs.add(myLibrarySongs.get(i));
+//    	}
+//    	return songs;
+//    }
+    
+    public Object[] getrecentlyPlayed() {
+    	if(!(recentlyPlayedSongs.size() < 1)) {
+    		Object[] songs = recentlyPlayedSongs.toArray();
+        	return songs;
+    	}else {
+    		return null;
+    	}
     }
     
     
@@ -117,6 +180,20 @@ public class LibraryModel {
                 return true;
             }
         }      
+        return false;
+    }
+    
+    public boolean playSong(String title, String artist) {
+    	for (Song song : myLibrarySongs) {
+            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+            	song.play();
+            	recentlyPlayedSongs.add(song);
+            	if(recentlyPlayedSongs.size() > 10) {
+            		recentlyPlayedSongs.remove();
+            	}
+                return true;
+            }
+        }
         return false;
     }
     
