@@ -333,20 +333,7 @@ public class LibraryModel {
         }      
         return false;
     }
-    
-    public boolean playSong(String title, String artist) {
-    	for (Song song : myLibrarySongs) {
-            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
-            	song.play();
-            	recentlyPlayedSongs.add(song);
-            	if(recentlyPlayedSongs.size() > 10) {
-            		recentlyPlayedSongs.remove();
-            	}
-                return true;
-            }
-        }
-        return false;
-    }
+
     
     public boolean hasSong(String title, String artist) {
     	for (Song song : myLibrarySongs) {
