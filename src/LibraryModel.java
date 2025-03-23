@@ -394,6 +394,16 @@ public class LibraryModel {
         return false;
     }
 
+    
+    public boolean hasSong(String title, String artist) {
+    	for (Song song : myLibrarySongs) {
+            if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public boolean rateSong(String title, String artist, int rating) {
         if (rating < 1 || rating > 5) {
@@ -662,7 +672,6 @@ public class LibraryModel {
                         playlist.removeSong(song.getTitle(), song.getArtist());
                     }
                     myLibrarySongs.remove(song);
-
                 }
             return true;
         }

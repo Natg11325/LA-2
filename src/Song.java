@@ -1,4 +1,4 @@
-
+package src;
 public class Song {
 	private String title;
 	private String artist;
@@ -20,9 +20,6 @@ public class Song {
         this.plays = 0;
     }
     
-    public int getPlays() {
-     	return 0 + plays;
-     }
 
     public String getTitle() {
         return title;
@@ -51,6 +48,10 @@ public class Song {
     public Integer getRating() {
         return rating;
     }
+    
+    public int getPlays() {
+    	return 0 + plays;
+    }
 
     public void setFavorite(boolean favorite) {
     	isAFavorite = favorite;
@@ -69,7 +70,7 @@ public class Song {
     public void play() {
      	plays += 1;
      }
- 
+
 
     @Override
     public String toString() {

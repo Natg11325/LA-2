@@ -15,7 +15,7 @@ public class LibraryView {
         this.manageAccounts = manageAccounts;
     }
 
-    public void start() {
+    public void start() throws FileNotFoundException {
         boolean running = true;
         
         System.out.println("Welcome to the Music Library Application!");
@@ -59,7 +59,7 @@ public class LibraryView {
     }
 
     // Show login menu
-    private void showLoginMenu() {
+    private void showLoginMenu() throws FileNotFoundException{
         System.out.println("\nSelect an option:");
         System.out.println("1. Login");
         System.out.println("2. Make Account");
@@ -103,7 +103,7 @@ public class LibraryView {
         }
     }
     
-    private void makeAccount() {
+    private void makeAccount() throws FileNotFoundException{
         System.out.print("Enter new username: ");
         String username = scanner.nextLine();
         
@@ -266,7 +266,7 @@ public class LibraryView {
                 break;
             case "7":
             	displayMostPlayed();
-                break;
+            	break;
             case "8":
                 displaySortedSongsOptions();
                 break;
@@ -374,8 +374,8 @@ public class LibraryView {
         // added to for the remove song and album function
         System.out.println("4. Remove a song from library");
         System.out.println("5. Remove an album from library");
-        //play a song
         System.out.println("6. Back to main menu");
+
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();
@@ -390,8 +390,8 @@ public class LibraryView {
             	playSong();
             	break;
             case "4":
-            	removeSongFromLibrary();
-                break; //case 4 would be to play a song
+           	  removeSongFromLibrary();
+              break; //case 4 would be to play a song
             case "5":
             	removeAlbumFromLibrary();
             	break;
@@ -513,7 +513,7 @@ public class LibraryView {
         	 System.out.println("Failed to play song. The song might not exist in your library.");
            }
     }
-    
+
 // THIS POINT FORWARD IS AI GENERATED ===================================================================
     
  
