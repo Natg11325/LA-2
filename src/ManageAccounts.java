@@ -156,7 +156,7 @@ public class ManageAccounts {
                     }
                     
                     // Create Account object and add to HashMap
-                    Account account = new Account(username, passwordHash, salt, library);
+                    Account account = new Account(username, passwordHash, library, salt);
                     accounts.put(username, account);
                 }
             }
