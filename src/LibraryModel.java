@@ -1,18 +1,226 @@
 //package src;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
  
 public class LibraryModel {
     private MusicStore musicStore;
     private List<Song> myLibrarySongs;
     private List<Album> myLibraryAlbums;
     private List<Playlist> playlists;
+    private Map<String, Playlist> automaticPlaylists;
+    private Queue<Song> recentlyPlayedSongs;
+
 
     public LibraryModel(MusicStore musicStore) {
         this.musicStore = musicStore;
         this.myLibrarySongs = new ArrayList<>();
         this.myLibraryAlbums = new ArrayList<>();
         this.playlists = new ArrayList<>();
+        this.automaticPlaylists = new HashMap<>();
+        this.recentlyPlayedSongs = new LinkedList<Song>();
+        initializeAutomaticPlaylists();
+        
+    }
+    
+    public void sortByPlays(ArrayList<Song> songs) {
+     	Collections.sort(songs, new Comparator<>() {
+ 
+ 			@Override
+ 			public int compare(Song a, Song b) {
+ 				// TODO Auto-generated method stub
+ 				return b.getPlays() - a.getPlays();
+ 			}
+     		
+     	});
+     }
+     
+     public void removePlaylist(String name) {
+     	for(int i = 0; i < playlists.size(); i++) {
+     		if(playlists.get(i).getName() == name) {
+     			playlists.remove(i);
+     		}
+     	}
+     }
+     
+     public Song[] getMostPlayed(){
+     	ArrayList<Song> songs = new ArrayList<Song>();
+     	for(int i = 0; i < myLibrarySongs.size()-1; i++) {
+     		Song song = myLibrarySongs.get(i);
+     		if(song.getPlays() > 0) {
+     			songs.add(song);
+     		}
+     	}
+     	sortByPlays(songs);
+     	Song[] mostPlayed = new Song[10];
+     	for(int i = 0; i < 10 && i < songs.size(); i++) {
+     		mostPlayed[i] = songs.get(i);
+     	}
+     	return mostPlayed;
+     }
+     
+ //    public ArrayList<Song> getMostPlayed() {
+ //    	ArrayList<Song> songs = new ArrayList<Song>(myLibrarySongs);
+ //    	sortByPlays(songs);
+ ////    	ArrayList<Song> songs = new ArrayList<Song>();
+ ////    	int i = 0;
+ //    	for(int i = 0; i < 10 && i < myLibrarySongs.size(); i++) {
+ //    		songs.add(myLibrarySongs.get(i));
+ //    	}
+ //    	return songs;
+ //    }
+     
+     public Object[] getrecentlyPlayed() {
+     	if(!(recentlyPlayedSongs.size() < 1)) {
+     		Object[] songs = recentlyPlayedSongs.toArray();
+         	return songs;
+     	}else {
+     		return null;
+     	}
+     }
+     
+     public boolean playSong(String title, String artist) {
+      	for (Song song : myLibrarySongs) {
+              if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
+              	song.play();
+              	recentlyPlayedSongs.add(song);
+              	if(recentlyPlayedSongs.size() > 10) {
+              		recentlyPlayedSongs.remove();
+              	}
+                  return true;
+              }
+          }
+          return false;
+      }
+    
+    // this helper method initializes the automatic playlists with empty playlists to start out 
+    private void initializeAutomaticPlaylists() {
+        // Create the Favorites playlist
+        Playlist favoritesPlaylist = new Playlist("Automatic Favorites: ");
+        // Adds the favorites playlist to the automaticPlaylists hashmap
+        automaticPlaylists.put("Automatic Favorites: ", favoritesPlaylist);
+        
+        // Create the Top Rated playlist
+        Playlist topRatedPlaylist = new Playlist("Automatic Top Rated: ");
+        // Adds the top rated playlist to the automaticPlaylists hashmap
+        automaticPlaylists.put("Automatic Top Rated: ", topRatedPlaylist);
+    }
+    
+    // Update all automatic playlists
+    private void updateAutoPlaylists() {
+        updateFavoritesPlaylist();
+        updateTopRatedPlaylist();
+        updateGenrePlaylists();
+    }
+    
+    
+    // Update the Favorites playlist with all the songs marked as favorite or rated 5
+    private void updateFavoritesPlaylist() {
+        Playlist favoritesPlaylist = automaticPlaylists.get("Automatic Favorites: ");
+        if (favoritesPlaylist == null) {
+            favoritesPlaylist = new Playlist("Automatic Favorites: ");
+            automaticPlaylists.put("Automatic Favorites: ", favoritesPlaylist);
+        }
+        
+        // Clear the current songs in the playlist
+        List<Song> currentSongs = favoritesPlaylist.getSongs();
+        for (Song song : currentSongs) {
+            favoritesPlaylist.removeSong(song.getTitle(), song.getArtist());
+        }
+        
+        // Add all favorite songs to the playlist
+        for (Song song : myLibrarySongs) {
+            if (song.isFavorite() || (song.getRating() != null && song.getRating() == 5)) {
+                favoritesPlaylist.addSong(song);
+            }
+        }
+    }
+    
+    // Update the Top Rated playlist with all the songs rated 4 or 5
+    private void updateTopRatedPlaylist() {
+        Playlist topRatedPlaylist = automaticPlaylists.get("Automatic Top Rated: ");
+        if (topRatedPlaylist == null) {
+            topRatedPlaylist = new Playlist("Automatic Top Rated: ");
+            automaticPlaylists.put("Automatic Top Rated: ", topRatedPlaylist);
+        }
+        
+        // Clear the current songs in the playlist
+        List<Song> currentSongs = topRatedPlaylist.getSongs();
+        for (Song song : currentSongs) {
+            topRatedPlaylist.removeSong(song.getTitle(), song.getArtist());
+        }
+        
+        // Add all songs rated 4 or 5 to the playlist
+        for (Song song : myLibrarySongs) {
+            if (song.getRating() != null && (song.getRating() == 4 || song.getRating() == 5)) {
+                topRatedPlaylist.addSong(song);
+            }
+        }
+    }
+    
+    private void updateGenrePlaylists() {
+        // Count songs by genre
+        Map<String, Integer> countForEachGenre = new HashMap<>();
+        for (Song song : myLibrarySongs) {
+            String genre = song.getGenre();
+            // Check if the genre already exists in the map
+            if (countForEachGenre.containsKey(genre)) {
+                // If it exists increment the count
+                int currentCount = countForEachGenre.get(genre);
+                countForEachGenre.put(genre, currentCount + 1);
+            } else {
+                // If it doesn't exist add it with count 1
+            	countForEachGenre.put(genre, 1);
+            }
+        }
+        
+        // Check and remove any existing genre playlists that are no longer valid
+        List<String> playlistsToRemove = new ArrayList<>();
+        for (String playlistName : automaticPlaylists.keySet()) {
+            if (playlistName.startsWith("Automatic Genre: ")) {
+                String genre = playlistName.substring("Automatic Genre: ".length());
+                if (!countForEachGenre.containsKey(genre) || countForEachGenre.get(genre) < 10) {
+                    playlistsToRemove.add(playlistName);
+                }
+            }
+        }
+        
+        for (String playlistName : playlistsToRemove) {
+            automaticPlaylists.remove(playlistName);
+        }
+        
+        // Create and update playlists for genres with at least 10 songs
+        for (String genre : countForEachGenre.keySet()) {
+            int count = countForEachGenre.get(genre);
+            
+            if (count >= 10) {
+                String playlistName = "Automatic Genre: " + genre;
+                Playlist genrePlaylist = automaticPlaylists.get(playlistName);
+                
+                if (genrePlaylist == null) {
+                    genrePlaylist = new Playlist(playlistName);
+                    automaticPlaylists.put(playlistName, genrePlaylist);
+                }
+                
+                // Clear the current songs in the playlist
+                List<Song> currentSongs = genrePlaylist.getSongs();
+                for (Song song : currentSongs) {
+                    genrePlaylist.removeSong(song.getTitle(), song.getArtist());
+                }
+                
+                // Add all songs of this genre to the playlist
+                for (Song song : myLibrarySongs) {
+                    if (song.getGenre().equals(genre)) {
+                        genrePlaylist.addSong(song);
+                    }
+                }
+            }
+        }
     }
     
     
@@ -22,6 +230,7 @@ public class LibraryModel {
         // Only add the song if it exists in the store and isn't already in the user's library
         if (song != null && !myLibrarySongs.contains(song)) {
             myLibrarySongs.add(song);
+            updateAutoPlaylists();
             return true;
         }
         return false;
@@ -43,6 +252,7 @@ public class LibraryModel {
                     myLibrarySongs.add(song);
                 }
             }
+            updateAutoPlaylists();
             return true;
         } 
         return false;
@@ -68,7 +278,8 @@ public class LibraryModel {
                 return playlist;
             }
         } 
-        return null;
+        //return null;
+        return automaticPlaylists.get(name);
     }
     
     
@@ -114,6 +325,7 @@ public class LibraryModel {
         for (Song song : myLibrarySongs) {
             if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
                 song.setFavorite(true);
+                updateAutoPlaylists();
                 return true;
             }
         }      
@@ -129,6 +341,7 @@ public class LibraryModel {
         for (Song song : myLibrarySongs) {
             if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
                 song.setRating(rating);
+                updateAutoPlaylists();
                 return true;
             }
         }
@@ -210,7 +423,7 @@ public class LibraryModel {
         return musicStore.searchAlbumsWithArtist(artist);
     }
     
- // Get all songs in the user's library
+    // Get all songs in the user's library
     public List<Song> getAllLibrarySongs() {
         return new ArrayList<>(myLibrarySongs);
     }
@@ -236,7 +449,15 @@ public class LibraryModel {
     
     // Get all playlists
     public List<Playlist> getAllPlaylists() {
-        return new ArrayList<>(playlists);
+        //return new ArrayList<>(playlists);
+        List<Playlist> allPlaylists = new ArrayList<>(playlists);
+        allPlaylists.addAll(automaticPlaylists.values());
+        return allPlaylists;
+    }
+
+    // Get only automatic playlists
+    public List<Playlist> getAutoPlaylists() {
+        return new ArrayList<>(automaticPlaylists.values());
     }
     
     
@@ -296,6 +517,7 @@ public class LibraryModel {
         return sortedSongs;
     }
 
+    
      // Returns a list of songs in the library sorted by rating in ascending order
     public List<Song> songsSortedByRating() {
         // new list that only includes songs with non-null ratings
@@ -323,6 +545,7 @@ public class LibraryModel {
         return songsWithRatings;
     }
      
+    
     public boolean removeSongFromLibrary(String title, String artist) {
         // Find the song in the user's library
         Song songToRemove = null;
@@ -347,6 +570,7 @@ public class LibraryModel {
         return false;
     }
     
+    
     public boolean removeAlbumFromLibrary(String title, String artist) {
         // Find the album in the user's library
         Album albumToRemove = null;
@@ -357,10 +581,9 @@ public class LibraryModel {
             }
         }
         
-        // If album was found, remove it
+        // If album was found then remove it
         if (albumToRemove != null) {
-            myLibraryAlbums.remove(albumToRemove);
-            
+            myLibraryAlbums.remove(albumToRemove); 
             // Get all songs from this album
             List<Song> songsToRemove = new ArrayList<>();
             for (Song song : myLibrarySongs) {
@@ -369,9 +592,8 @@ public class LibraryModel {
                 }
             }
             
-            // Remove all songs that belong exclusively to this album
+            // Remove all songs that belong to that album
             for (Song song : songsToRemove) {
-                // Check if this song appears in any other albums              
                     // Also remove the song from all playlists
                     for (Playlist playlist : playlists) {
                         playlist.removeSong(song.getTitle(), song.getArtist());
@@ -381,6 +603,7 @@ public class LibraryModel {
         }
         return false;
     }
+    
     
 }
   

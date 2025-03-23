@@ -473,7 +473,7 @@ class LibraryModelTest {
         assertTrue(librarySongs.isEmpty());
         
         // Verify that the song is also removed from the playlist
-        Playlist playlist = libraryModel.getPlaylistWithName("my playlist");
+        Playlist playlist = libraryModel.getPlaylistWithName("my playlist"); 
         assertTrue(playlist.getSongs().isEmpty());
         
         // Test removing a song that doesn't exist
@@ -527,6 +527,40 @@ class LibraryModelTest {
         // Test removing an album that doesn't exist
         removeResult = libraryModel.removeAlbumFromLibrary("a song that doesn't exist", "an artist that doesn't exist");
         assertFalse(removeResult);
+    }
+    
+    
+    @Test 
+    public void testInitializeAutomaticPlaylists() throws FileNotFoundException {
+        MusicStore musicStore = new MusicStore();
+        LibraryModel libraryModel = new LibraryModel(musicStore);
+        
+        // Get all automatic playlists
+        List<Playlist> automaticPlaylists = libraryModel.getAutoPlaylists();
+                
+        // Booleans to track if both automatic playlists are found
+        boolean favoritesIsFound = false;
+        boolean topRatedIsFound = false;
+        
+        // Iterate through all automatic playlists checking their names
+        for (Playlist playlist : automaticPlaylists) {
+        	// Check if this playlist is the Favorites automatic playlist
+            if (playlist.getName().equals("Automatic Favorites: ")) {
+            	favoritesIsFound = true;
+            // Check if this playlist is the Top Rated automatic playlist
+            } else if (playlist.getName().equals("Automatic Top Rated: ")) {
+            	topRatedIsFound = true;
+            }
+        }
+        
+        // Verify it was created
+        assertTrue(favoritesIsFound);
+        assertTrue(topRatedIsFound);
+        
+        // Check that all automatic playlists start out as empty
+        for (Playlist playlist : automaticPlaylists) {
+            assertTrue(playlist.getSongs().isEmpty());
+        }
     }
     
     
