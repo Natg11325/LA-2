@@ -563,6 +563,99 @@ class LibraryModelTest {
         }
     }
     
+    @Test
+    public void testGetAllPlaylists() throws FileNotFoundException {
+        MusicStore musicStore = new MusicStore();
+        LibraryModel libraryModel = new LibraryModel(musicStore);
+        
+        List<Playlist> initialPlaylists = libraryModel.getAllPlaylists();
+        
+        // Checks that the automatic playlists exist by their names
+        boolean favoritesIsFound = false;
+        boolean topRatedIsFound = false;
+        
+        for (Playlist playlist : initialPlaylists) {
+            if (playlist.getName().equals("Automatic Favorites: ")) {
+            	favoritesIsFound = true;
+            } else if (playlist.getName().equals("Automatic Top Rated: ")) {
+            	topRatedIsFound = true;
+            }
+        }
+        
+        assertTrue(favoritesIsFound);
+        assertTrue(topRatedIsFound);
+
+        String playlist1 = "NatsPlaylist1";
+        String playlist2 = "NatsPlaylist2";
+        libraryModel.createPlaylist(playlist1);
+        libraryModel.createPlaylist(playlist2);
+        
+        // Get all playlists again
+        List<Playlist> updatedPlaylists = libraryModel.getAllPlaylists();
+                
+        // Checks that the my playlists exist by their names
+        boolean playlist1IsFound = false;
+        boolean playlist2IsFound = false;
+        
+        for (Playlist playlist : updatedPlaylists) {
+            if (playlist.getName().equals(playlist1)) {
+            	playlist1IsFound = true;
+            } else if (playlist.getName().equals(playlist2)) {
+            	playlist2IsFound = true;
+            }
+        }
+        
+        assertTrue(playlist1IsFound);
+        assertTrue(playlist2IsFound);
+        
+        for (Playlist playlist : updatedPlaylists) {
+            if (playlist.getName().equals("Automatic Favorites: ")) {
+            	favoritesIsFound = true;
+            } else if (playlist.getName().equals("Automatic Top Rated: ")) {
+            	topRatedIsFound = true;
+            }
+        }
+         
+        assertTrue(favoritesIsFound);
+        assertTrue(topRatedIsFound);
+        
+        // Creates a genre playlist by adding enough songs of the same genre
+        List<Song> allSongs = musicStore.getAllSongs();
+        
+        // Gets the first song and its genre
+        Song firstSong = allSongs.get(0);
+        String genre = firstSong.getGenre();
+        
+        // Add at least 10 songs from this genre to trigger the genre playlist being made
+        int songsAdded = 0;
+        for (Song song : allSongs) {
+            if (song.getGenre().equals(genre)) {
+                libraryModel.addSongToLibrary(song.getTitle(), song.getArtist());
+                songsAdded++;
+                
+                if (songsAdded >= 10) {
+                    break;
+                }
+            }
+        }
+        
+        if (songsAdded >= 10) {
+            List<Playlist> playlistsWithGenre = libraryModel.getAllPlaylists();
+                        
+            boolean genrePlaylistIsFound = false;
+            String genrePlaylistName = "Automatic Genre: " + genre;
+            
+            for (Playlist playlist : playlistsWithGenre) {
+                if (playlist.getName().equals(genrePlaylistName)) {
+                	genrePlaylistIsFound = true;
+                    break;
+                }
+            }
+            
+            assertTrue(genrePlaylistIsFound);
+        }
+    }
+    
     
     
 }
