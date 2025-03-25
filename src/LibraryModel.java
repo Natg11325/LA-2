@@ -30,6 +30,9 @@ public class LibraryModel {
     }
     
     public void sortByPlays(ArrayList<Song> songs) {
+    	/*Sorts the list of songs by the amount of plays. The song with
+    	 * the largest amount of plays will be in index 0.
+    	 */
      	Collections.sort(songs, new Comparator<>() {
  
  			@Override
@@ -42,6 +45,7 @@ public class LibraryModel {
      }
      
      public void removePlaylist(String name) {
+    	 //removes a play list from the library.
      	for(int i = 0; i < playlists.size(); i++) {
      		if(playlists.get(i).getName() == name) {
      			playlists.remove(i);
@@ -50,35 +54,28 @@ public class LibraryModel {
      }
      
      public Song[] getMostPlayed(){
+    	 //gets the 10 most played songs in the library.
      	ArrayList<Song> songs = new ArrayList<Song>();
-     	for(int i = 0; i < myLibrarySongs.size()-1; i++) {
+     	for(int i = 0; i < myLibrarySongs.size(); i++) {
      		Song song = myLibrarySongs.get(i);
      		if(song.getPlays() > 0) {
-     			//if the song has been played at least once.
+     			//Only add the song if the song has been played at least once.
      			songs.add(song);
      		}
      	}
      	sortByPlays(songs);
      	Song[] mostPlayed = new Song[10];
      	for(int i = 0; i < 10 && i < songs.size(); i++) {
+     		//stop when out of played songs or when the list reaches 10.
      		mostPlayed[i] = songs.get(i);
      	}
      	return mostPlayed;
      }
      
- //    public ArrayList<Song> getMostPlayed() {
- //    	ArrayList<Song> songs = new ArrayList<Song>(myLibrarySongs);
- //    	sortByPlays(songs);
- ////    	ArrayList<Song> songs = new ArrayList<Song>();
- ////    	int i = 0;
- //    	for(int i = 0; i < 10 && i < myLibrarySongs.size(); i++) {
- //    		songs.add(myLibrarySongs.get(i));
- //    	}
- //    	return songs;
- //    }
-     
      public Object[] getrecentlyPlayed() {
+    	 //gets the 10 recently played songs in the library.
      	if(!(recentlyPlayedSongs.size() < 1)) {
+     		//checks to see that the user has actually played any songs.
      		Object[] songs = recentlyPlayedSongs.toArray();
          	return songs;
      	}else {
@@ -92,6 +89,7 @@ public class LibraryModel {
               	song.play();
               	recentlyPlayedSongs.add(song);
               	if(recentlyPlayedSongs.size() > 10) {
+              		//if there have already been over 10 songs played, remove the oldest played song to keep it at 10.
               		recentlyPlayedSongs.remove();
               	}
                   return true;
@@ -123,6 +121,9 @@ public class LibraryModel {
     
     // Update all automatic playlists
     private void updateAutoPlaylists() {
+    	/*NOTE: The automatic lists recently played and most played
+    	 * are not updated here, as recently played needs to be updated each time a song is played,
+    	 *and most played updates itself by looking at every song in the library.*/
         updateFavoritesPlaylist();
         updateTopRatedPlaylist();
         updateGenrePlaylists();
@@ -662,8 +663,7 @@ public class LibraryModel {
             return true;
         }
         return false;
-    }
-    
+    }    
     
     public boolean removeAlbumFromLibrary(String title, String artist) {
         // Find the album in the user's library

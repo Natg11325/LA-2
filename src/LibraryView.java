@@ -434,7 +434,7 @@ public class LibraryView {
             	break;
             case "4":
            	  removeSongFromLibrary();
-              break; //case 4 would be to play a song
+              break;
             case "5":
             	removeAlbumFromLibrary();
             	break;
@@ -447,10 +447,9 @@ public class LibraryView {
     
     
     private void createMostPlayedPlaylist() {
-//    	ArrayList<Song> songs = model.getMostPlayed();
     	Song[] songs = model.getMostPlayed();
-//    	Object[] playedSongs = model.getrecentlyPlayed();
     	if((songs[0] == null)) {
+    		//if no songs have been played, do not create.
     		return;
     	}else {
     		Playlist playlist = model.getPlaylistWithName("Most Played Songs");
@@ -466,6 +465,7 @@ public class LibraryView {
     		}
     		for(int i = 0; i < songs.length; i++) {
     			if(songs[i] == null) {
+    				//when it gets to a song that has no plays, it stops.
     				break;
     			}
     			model.addSongToPlaylist(playlist.getName(), songs[i].getTitle(), songs[i].getArtist());
@@ -474,15 +474,14 @@ public class LibraryView {
     }
     
     private void displayMostPlayed() {
-//    	ArrayList<Song> songs = model.getMostPlayed();
     	Song[] songs = model.getMostPlayed();
-//    	Object[] playedSongs = model.getrecentlyPlayed();
     	if((songs[0] == null)) {
     		System.out.println("You have not played any songs.");
     	}else {
     		System.out.println("Most played songs:");
     		for(int i = 0; i < songs.length; i++) {
     			if(songs[i] == null) {
+    				//when it gets to a song that has no plays, it stops. 
     				break;
     			}
     			System.out.println(songs[i].getTitle() + " by " + songs[i].getArtist());
@@ -496,6 +495,7 @@ public class LibraryView {
     private void createRecentlyPlayedPlaylist() {
     	Object[] songs = model.getrecentlyPlayed();
     	if (songs == null) {
+    		//does not create the playlist if no songs have been played.
     		return;
     	}else {
     		Playlist playlist = model.getPlaylistWithName("Recently Played Songs");
@@ -531,7 +531,7 @@ public class LibraryView {
     	}
     }
     
-    //method to play a song. May be similar to rateSongs where you enter a song to play.
+    //Plays a song.
     private void playSong() {
     	System.out.print("Enter the song title: ");
         String title = scanner.nextLine();
@@ -543,15 +543,12 @@ public class LibraryView {
 			model.createPlaylist("Most Played Songs");
 			playlist = model.getPlaylistWithName("Most Played Songs");
 		}
-            
-        // Calls the model to rate the specified song with the provided rating
         boolean success = model.playSong(title, artist);
-            
-         // The rateSong method will return a boolean which tells you if it was successful or not
         if (success) {
-            // if successful, prints a message saying so.
+            // if the song was successfully played, prints a message saying so.
         	System.out.println("Now playing: " + title + ", by " + artist);
         	model.addSongToPlaylist(playlist.getName(), title, artist);
+        	//update played song playlists each time we play a song. 
         	createMostPlayedPlaylist();
         	createRecentlyPlayedPlaylist();
         } else {
@@ -565,6 +562,7 @@ public class LibraryView {
          System.out.println("2. No");
          String choice = scanner.nextLine();
          if(choice.equals("2")) {
+        	 //when no, do not display. 
          	return;
          }
     	String title = song.getAlbum();
@@ -573,7 +571,6 @@ public class LibraryView {
     	for (int i = 0; i < results.size(); i++) {
             Album album = results.get(i);
             System.out.println(album.getTitle() + " by " + album.getArtist() + " (" + album.getYear() + ") - " + album.getGenre());
-            
             System.out.println("   Songs:");
             List<String> songTitles = album.getSongTitles();
             for (int j = 0; j < songTitles.size(); j++) {
