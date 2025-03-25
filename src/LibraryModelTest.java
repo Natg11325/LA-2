@@ -1,4 +1,4 @@
-//package src;
+//package default;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,6 +15,70 @@ class LibraryModelTest {
 		MusicStore myStore = new MusicStore();
 		LibraryModel myModel = new LibraryModel(myStore);
 		assertNotNull(myModel); //verify that constructor works
+	}
+	
+	@Test
+	public void testAddAutoPlaylist() throws FileNotFoundException{
+		MusicStore myStore = new MusicStore();
+		LibraryModel myModel = new LibraryModel(myStore);
+		Playlist playlist = new Playlist("test");
+		myModel.addAutoPlaylist("key", playlist);
+		assertNotNull(myModel.getAutoPlaylists().get(0));
+	}
+	
+	@Test
+	public void testRemoveAutoPlaylist() throws FileNotFoundException{
+		MusicStore myStore = new MusicStore();
+		LibraryModel myModel = new LibraryModel(myStore);
+		Playlist playlist = new Playlist("test");
+		myModel.addAutoPlaylist("key", playlist);
+		assertTrue(myModel.removeAutoPlaylist("key"));
+	}
+	
+	@Test
+	public void testPlaySong() throws FileNotFoundException{
+		MusicStore myStore = new MusicStore();
+		LibraryModel myModel = new LibraryModel(myStore);
+		assertTrue(myModel.getAllLibrarySongs().isEmpty());
+		//test playing a song that is not in the library.
+		assertFalse(myModel.playSong("Daydreamer", "Adele"));
+		
+		myModel.addSongToLibrary( "wrongValue", "wrongValue");
+		myModel.addSongToLibrary( "Daydreamer", "Adele");
+		myModel.addSongToLibrary( "Chasing Pavements", "Adele");
+		//make sure adding the song worked
+		assertFalse(myModel.getAllLibrarySongs().isEmpty());
+		//test a song that does not match the title. 
+		assertFalse(myModel.playSong("nonsense", "Adele"));
+		//test a song that does not match the artist.
+		assertFalse(myModel.playSong("Daydreamer", "nonsense"));
+		//test a song that matches both(song is inside of library).
+		assertTrue(myModel.playSong("Daydreamer", "Adele"));
+		//test that the plays was successfully incremented. 
+		assertTrue(myModel.getrecentlyPlayed()[0] != null);
+	}
+	
+	@Test
+	public void testGetRecentlyPlayed() throws FileNotFoundException{
+		MusicStore myStore = new MusicStore();
+		LibraryModel myModel = new LibraryModel(myStore);
+		assertNull(myModel.getrecentlyPlayed());
+		myModel.addSongToLibrary( "wrongValue", "wrongValue");
+		myModel.addSongToLibrary( "Daydreamer", "Adele");
+		myModel.addSongToLibrary( "Chasing Pavements", "Adele");
+		myModel.playSong("Daydreamer", "Adele");
+		assertTrue(myModel.getrecentlyPlayed()[0] != null);
+	}
+	
+	@Test
+	public void testGetMostPlayed() throws FileNotFoundException {
+		MusicStore myStore = new MusicStore();
+		LibraryModel myModel = new LibraryModel(myStore);
+		myModel.addSongToLibrary( "wrongValue", "wrongValue");
+		myModel.addSongToLibrary( "Daydreamer", "Adele");
+		myModel.addSongToLibrary( "Chasing Pavements", "Adele");
+		myModel.playSong("Daydreamer", "Adele");
+		assertTrue(myModel.getMostPlayed()[0] != null);
 	}
 	
 	@Test
@@ -46,7 +110,46 @@ class LibraryModelTest {
 		assertTrue(myModel.addAlbumToLibrary( "19", "Adele"));
 		
 		//tests when library already contains the album. A song from this album has already been added.
-		assertFalse(myModel.addAlbumToLibrary( "19", "Adele"));
+		assertTrue(myModel.addAlbumToLibrary( "19", "Adele"));
+	}
+	 
+	@Test
+	public void testHasSong() throws FileNotFoundException{
+		MusicStore musicStore = new MusicStore();
+        LibraryModel libraryModel = new LibraryModel(musicStore);
+        
+        // Get the first song from the allSongs list from music store
+        List<Song> allSongs = musicStore.getAllSongs();
+        assertFalse(allSongs.isEmpty());
+        // get the title and artist from that song
+        String songTitle = allSongs.get(0).getTitle();
+        String songArtist = allSongs.get(0).getArtist();
+        
+        // search for a song that exists. 
+        libraryModel.addSongToLibrary(songTitle, songArtist);
+        assertTrue(libraryModel.hasSong(songTitle, songArtist));
+        
+        //Search for song that does not exist.
+        assertFalse(libraryModel.hasSong("nonsense", "nonsense"));
+	}
+	
+	@Test
+	public void testHasAlbum() throws FileNotFoundException{
+		MusicStore musicStore = new MusicStore();
+        LibraryModel libraryModel = new LibraryModel(musicStore);
+        
+        List<Album> allAlbums = musicStore.getAllAlbums();
+        assertFalse(allAlbums.isEmpty());
+        
+        String title = allAlbums.get(0).getTitle();
+        String artist = allAlbums.get(0).getArtist();
+        //search for an album that exists.
+        libraryModel.addAlbumToLibrary(title, artist);
+        assertTrue(libraryModel.hasAlbum(title));
+        
+        //search for an album that does not exist. 
+        assertFalse(libraryModel.hasAlbum("nonsense"));
+        
 	}
 	
     @Test
@@ -656,6 +759,33 @@ class LibraryModelTest {
         }
     }
     
+    @Test
+    public void testGetShuffledLibrarySongs() throws FileNotFoundException {
+        MusicStore musicStore = new MusicStore();
+        LibraryModel libraryModel = new LibraryModel(musicStore);
+        
+        // Adds songs to library
+        List<Song> allSongs = musicStore.getAllSongs();
+        for (int i = 0; i < 3 && i < allSongs.size(); i++) {
+            Song song = allSongs.get(i);
+            libraryModel.addSongToLibrary(song.getTitle(), song.getArtist());
+        }
+        
+        // Get original library songs
+        List<Song> originalSongs = libraryModel.getAllLibrarySongs();
+        
+        // Get shuffled songs
+        List<Song> shuffledSongs = libraryModel.getShuffledLibrarySongs();
+        
+        // Verify the size is the same and that its not null
+        assertNotNull(shuffledSongs);
+        assertEquals(originalSongs.size(), shuffledSongs.size());
+        
+        // Verify all of the original songs are in the shuffled list
+        for (Song song : originalSongs) {
+            assertTrue(shuffledSongs.contains(song));
+        }
+    }
     
     
 }

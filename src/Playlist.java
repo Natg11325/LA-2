@@ -1,4 +1,6 @@
+//package src;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Playlist {
@@ -38,6 +40,10 @@ public class Playlist {
 			}
 		}
 	}
+	
+    public void shuffle() {
+        Collections.shuffle(songs);
+    }
 	
 	@Override
 	public String toString() {

@@ -1,4 +1,4 @@
-
+//package src;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,6 +54,7 @@ public class LibraryModel {
      	for(int i = 0; i < myLibrarySongs.size()-1; i++) {
      		Song song = myLibrarySongs.get(i);
      		if(song.getPlays() > 0) {
+     			//if the song has been played at least once.
      			songs.add(song);
      		}
      	}
@@ -98,6 +99,14 @@ public class LibraryModel {
           }
           return false;
       }
+     
+    public void addAutoPlaylist(String key, Playlist playlist) {
+    	automaticPlaylists.put(key, playlist);
+    }
+    
+    public boolean removeAutoPlaylist(String key) {
+    	return automaticPlaylists.remove(key) != null;
+    }
     
     // this helper method initializes the automatic playlists with empty playlists to start out 
     private void initializeAutomaticPlaylists() {
@@ -383,8 +392,15 @@ public class LibraryModel {
         return false;
     }
     
+    public boolean hasAlbum(String title) {
+    	for(Album album: myLibraryAlbums) {
+    		if(album.getTitle().equals(title)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
-    
     public boolean hasSong(String title, String artist) {
     	for (Song song : myLibrarySongs) {
             if (song.getTitle().equals(title) && song.getArtist().equals(artist)) {
@@ -409,6 +425,17 @@ public class LibraryModel {
         }
         return false;
     } 
+    
+    public List<Song> searchLibrarySongsWithGenre(String genre){
+    	List<Song> results = new ArrayList<>();
+    	String searchGenre = genre.toLowerCase();
+    	for(Song song : myLibrarySongs) {
+    		if(song.getTitle().toLowerCase().equals(searchGenre)) {
+    			results.add(song);
+    		}
+    	}
+    	return results;
+    }
     
 
     public List<Song> searchLibSongsWithTitle(String title) {
@@ -465,6 +492,10 @@ public class LibraryModel {
  // Search for songs by title in the music store
     public List<Song> searchStoreSongsWithTitle(String title) {
         return musicStore.searchSongsWithTitle(title);
+    }
+    
+    public List<Song> searchStoreSongsWithGenre(String genre){
+    	return musicStore.searchSongsWithGenre(genre);
     }
     
     
@@ -662,13 +693,30 @@ public class LibraryModel {
                         playlist.removeSong(song.getTitle(), song.getArtist());
                     }
                     myLibrarySongs.remove(song);
-
                 }
             return true;
         }
         return false;
     }
     
+    public List<Song> getShuffledLibrarySongs() {
+        List<Song> shuffledSongs = new ArrayList<>(myLibrarySongs);
+        // get the copy of the library songs and shuffle them using collections sort
+        Collections.shuffle(shuffledSongs);
+        return shuffledSongs;
+    }
     
+    
+    // shuffles a playlist given the playlists name 
+    public Playlist shufflePlaylist(String playlistName) {
+        Playlist playlist = getPlaylistWithName(playlistName);
+        if (playlist != null) {
+            playlist.shuffle();
+            return playlist;
+        }
+        return null;
+    }
+    
+     
 }
   
