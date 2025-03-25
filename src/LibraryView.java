@@ -249,7 +249,9 @@ public class LibraryView {
         System.out.println("6. List most recently played songs.");
         System.out.println("7. List most played songs.");
         System.out.println("8. List sorted songs");
-        System.out.println("9. Back to main menu");
+        System.out.println("9. List shuffled songs");
+        System.out.println("10. Back to main menu");
+
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();
@@ -280,7 +282,33 @@ public class LibraryView {
                 displaySortedSongsOptions();
                 break;
             case "9":
+            	shuffleSongsOption();
             	break;
+            case "10":
+            	break;
+            default:
+                System.out.println("Invalid choice. Returning to main menu.");
+        }
+    } 
+    
+    private void shuffleSongsOption() {
+        System.out.println("\nShuffle Options:");
+        System.out.println("1. Shuffle all library songs");
+        System.out.println("2. Shuffle a playlist");
+        System.out.println("3. Back to main menu");
+        
+        System.out.print("Enter your choice: ");
+        String choice = scanner.nextLine();
+        
+        switch (choice) {
+            case "1":
+                displayShuffledLibrarySongs();
+                break;
+            case "2":
+                shuffleAndDisplayPlaylist();
+                break;
+            case "3":
+                break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
         }
@@ -617,7 +645,7 @@ public class LibraryView {
 
 // THIS POINT FORWARD IS AI GENERATED ===================================================================
     
- 
+  
      
     // Search for a song by title in the store
     private void searchStoreSongByTitle() {
@@ -1408,4 +1436,76 @@ public class LibraryView {
             System.out.println("Invalid input. Please enter a number.");
         }
     }
+    
+    private void displayShuffledLibrarySongs() {
+        List<Song> shuffledSongs = model.getShuffledLibrarySongs();
+        
+        if (shuffledSongs.isEmpty()) {
+            System.out.println("Your library has no songs to shuffle.");
+        } else {
+            System.out.println("\nYour library songs in shuffled order:");
+            for (int i = 0; i < shuffledSongs.size(); i++) {
+                Song song = shuffledSongs.get(i);
+                System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist());
+            }
+            
+            // Wait for user to press enter before returning to menu
+            System.out.println("\nPress Enter to return to main menu");
+            scanner.nextLine();
+        }
+    }
+
+    
+    private void shuffleAndDisplayPlaylist() {
+        // Display available playlists
+        List<Playlist> playlists = model.getAllPlaylists();
+        
+        if (playlists.isEmpty()) {
+            System.out.println("You have no playlists to shuffle.");
+            return;
+        }
+        
+        System.out.println("\nAvailable playlists:");
+        for (int i = 0; i < playlists.size(); i++) {
+            Playlist playlist = playlists.get(i);
+            System.out.println((i + 1) + ". " + playlist.getName() + " (" + playlist.getSongAmt() + " songs)");
+        }
+        
+        System.out.print("\nEnter the number of the playlist to shuffle (or 0 to cancel): ");
+        try {
+            int index = Integer.parseInt(scanner.nextLine()) - 1;
+            
+            if (index == -1) {
+                return; // User canceled
+            }
+            
+            if (index >= 0 && index < playlists.size()) {
+                Playlist selectedPlaylist = playlists.get(index);
+                
+                // Shuffle the playlist
+                Playlist shuffledPlaylist = model.shufflePlaylist(selectedPlaylist.getName());
+                
+                if (shuffledPlaylist == null || shuffledPlaylist.getSongs().isEmpty()) {
+                    System.out.println("The selected playlist is empty or could not be shuffled.");
+                } else {
+                    System.out.println("\nPlaylist '" + shuffledPlaylist.getName() + "' in shuffled order:");
+                    List<Song> songs = shuffledPlaylist.getSongs();
+                    for (int i = 0; i < songs.size(); i++) {
+                        Song song = songs.get(i);
+                        System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist());
+                    }
+                    
+                    // Wait for user to press enter before returning to menu
+                    System.out.println("\nPress Enter to return to main menu");
+                    scanner.nextLine();
+                }
+            } else {
+                System.out.println("Invalid playlist number.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number.");
+        }
+    }
+
+  
 }
