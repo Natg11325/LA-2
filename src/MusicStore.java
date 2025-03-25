@@ -1,4 +1,4 @@
-package src;
+//package src;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -70,6 +70,18 @@ public class MusicStore {
                 }
             }
             scanner.close();
+    }
+    
+    
+    public List<Song> searchSongsWithGenre(String genre){
+    	List<Song> results = new ArrayList<>();
+    	String searchGenre = genre.toLowerCase();
+    	for(Song song: songs) {
+    		if(song.getGenre().toLowerCase().equals(searchGenre)) {
+    			results.add(song);
+    		}
+    	}
+    	return results;
     }
     
     

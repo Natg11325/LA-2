@@ -1,3 +1,5 @@
+//package src;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +11,7 @@ public class LibraryView {
     private ManageAccounts manageAccounts;
     private Account currentAccount;
  
-    public LibraryView(MusicStore musicStore, ManageAccounts manageAccounts) {
+    public LibraryView(ManageAccounts manageAccounts) {
         this.model = null;
         this.scanner = new Scanner(System.in);
         this.manageAccounts = manageAccounts;
@@ -145,9 +147,10 @@ public class LibraryView {
         System.out.println("\nSearch Music Store:");
         System.out.println("1. Search for a song by title");
         System.out.println("2. Search for a song by artist");
-        System.out.println("3. Search for an album by title");
-        System.out.println("4. Search for an album by artist");
-        System.out.println("5. Back to main menu");
+        System.out.println("3. Search for a song by genre");
+        System.out.println("4. Search for an album by title");
+        System.out.println("5. Search for an album by artist");
+        System.out.println("6. Back to main menu");
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();
@@ -159,12 +162,15 @@ public class LibraryView {
                 searchStoreSongByArtist();
                 break;
             case "3":
+            	searchStoreSongByGenre();
+            	break;
+            case "4":
                 searchStoreAlbumByTitle();
                 break;
-            case "4":
+            case "5":
                 searchStoreAlbumByArtist();
                 break;
-            case "5":
+            case "6":
                 break;
             default:
                 System.out.println("Invalid choice. Returning to the main menu.");
@@ -176,10 +182,11 @@ public class LibraryView {
         System.out.println("\nSearch My Library:");
         System.out.println("1. Search for a song by title");
         System.out.println("2. Search for a song by artist");
-        System.out.println("3. Search for an album by title");
-        System.out.println("4. Search for an album by artist");
-        System.out.println("5. Search for a playlist by name");
-        System.out.println("6. Back to main menu");
+        System.out.println("3. Search for a song by genre");
+        System.out.println("4. Search for an album by title");
+        System.out.println("5. Search for an album by artist");
+        System.out.println("6. Search for a playlist by name");
+        System.out.println("7. Back to main menu");
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();  
@@ -191,15 +198,17 @@ public class LibraryView {
                 searchLibrarySongByArtist();
                 break;
             case "3":
+            	searchLibrarySongByGenre();
+            case "4":
                 searchLibraryAlbumByTitle();
                 break;
-            case "4":
+            case "5":
                 searchLibraryAlbumByArtist();
                 break;
-            case "5":
+            case "6":
                 searchPlaylistByName();
                 break;
-            case "6":
+            case "7":
                 break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
@@ -343,7 +352,9 @@ public class LibraryView {
         System.out.println("1. Favorites Playlist");
         System.out.println("2. Top Rated Playlist");
         System.out.println("3. Genre Playlists");
-        System.out.println("4. Back to main menu");
+        System.out.println("4. Recently Played Playlist");
+        System.out.println("5. Most Played Playlist");
+        System.out.println("6. Back to main menu");
         
         System.out.print("Enter your choice: ");
         String choice = scanner.nextLine();
@@ -359,6 +370,10 @@ public class LibraryView {
                 viewGenrePlaylists();
                 break;
             case "4":
+            	displayRecentlyPlayed();
+            case "5":
+            	displayMostPlayed();
+            case "6":
                 break;
             default:
                 System.out.println("Invalid choice. Returning to playlist menu.");
@@ -465,6 +480,8 @@ public class LibraryView {
     			model.removePlaylist("Recently Played Songs");
     			model.createPlaylist("Recently Played Songs");
     			playlist = model.getPlaylistWithName("Recently Played Songs");
+    			model.removeAutoPlaylist("Automatic Recently Played: ");
+    			model.addAutoPlaylist("Automatic Recently Played: ", playlist);
     		}
     		for(int i = songs.length-1; i >= 0; i--) {
     			 Object song = songs[i];
@@ -513,6 +530,93 @@ public class LibraryView {
         	 System.out.println("Failed to play song. The song might not exist in your library.");
            }
     }
+    
+    private void getSongAlbum(Song song) {
+    	 System.out.println("Display the album info of the previous song(s)?");
+         System.out.println("1. Yes");
+         System.out.println("2. No");
+         String choice = scanner.nextLine();
+         if(choice.equals("2")) {
+         	return;
+         }
+    	String title = song.getAlbum();
+    	List<Album> results = model.searchStoreAlbumsWithTitle(title);
+    	System.out.println("Album info for this song: ");
+    	for (int i = 0; i < results.size(); i++) {
+            Album album = results.get(i);
+            System.out.println(album.getTitle() + " by " + album.getArtist() + " (" + album.getYear() + ") - " + album.getGenre());
+            
+            System.out.println("   Songs:");
+            List<String> songTitles = album.getSongTitles();
+            for (int j = 0; j < songTitles.size(); j++) {
+                System.out.println("   " + (j + 1) + ". " + songTitles.get(j));
+            }
+            System.out.println();
+        }
+    	if(!model.hasAlbum(title)) {
+    		System.out.println("This album is not in your library.");
+    	}else {
+    		System.out.println("This album is currently in your library.");
+    	}
+    }
+    
+    private void searchStoreSongByGenre() {
+    	printGenres();
+    	System.out.println("Enter the genre to search.");
+    	String genre = scanner.nextLine().toLowerCase();
+    	List<Song> results = model.searchStoreSongsWithGenre(genre);
+    	
+    	if(results.isEmpty()) {
+    		System.out.println("No songs found under this genre.");
+    	}else {
+    		System.out.println("Found " + results.size() + " songs: ");
+    		String previousAlbum = "";
+            for (int i = 0; i < results.size(); i++) {
+                Song song = results.get(i);
+                // (i+1) is 10 based indexing meaning it starts at 1 instead of 0
+                System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist() + " under genre " + song.getGenre());
+                if(!previousAlbum.equals(song.getAlbum())) {
+                	//only print the same album info once. 
+                	getSongAlbum(song);
+                }
+                previousAlbum = song.getAlbum();
+            }
+    	}
+    }
+    
+    private void printGenres() {
+    	System.out.println("The genres available are: ");
+    	System.out.println("Pop");
+    	System.out.println("Alternative");
+    	System.out.println("Traditional");
+    	System.out.println("Latin");
+    	System.out.println("Rock");
+    	System.out.println("Singer/Songwriter");
+    }
+    
+    private void searchLibrarySongByGenre() {
+    	printGenres();
+    	System.out.println("Enter the genre to search.");
+    	String genre = scanner.nextLine().toLowerCase();
+    	List<Song> results = model.searchLibrarySongsWithGenre(genre);
+    	if(results.isEmpty()) {
+    		System.out.println("No songs found under this genre.");
+    	}
+    	else {
+    		System.out.println("Found " + results.size() + " songs: ");
+    		String previousAlbum = "";
+            for (int i = 0; i < results.size(); i++) {
+                Song song = results.get(i);
+                // (i+1) is 10 based indexing meaning it starts at 1 instead of 0
+                System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist() + " under genre " + song.getGenre());
+                if(!previousAlbum.equals(song.getAlbum())) {
+                	//only print the same album info once. 
+                	getSongAlbum(song);
+                }
+                previousAlbum = song.getAlbum();
+            }
+    	}
+    }
 
 // THIS POINT FORWARD IS AI GENERATED ===================================================================
     
@@ -532,10 +636,16 @@ public class LibraryView {
         	// otherwise it prints the number of matches found 
             System.out.println("Found " + results.size() + " songs:");
             // loops through all the results if there's multiple and prints them in a specific format
+            String previousAlbum = "";
             for (int i = 0; i < results.size(); i++) {
                 Song song = results.get(i);
                 // (i+1) is 10 based indexing meaning it starts at 1 instead of 0
                 System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist() + " from album " + song.getAlbum());
+                if(!previousAlbum.equals(song.getAlbum())) {
+                	//only print the same album info once. 
+                	getSongAlbum(song);
+                }
+                previousAlbum = song.getAlbum();
             }
         }
     }
@@ -551,9 +661,15 @@ public class LibraryView {
             System.out.println("No songs found by artist containing '" + artist + "'.");
         } else {
             System.out.println("Found " + results.size() + " songs:");
+            String previousAlbum = "";
             for (int i = 0; i < results.size(); i++) {
                 Song song = results.get(i);
                 System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist() + " from album " + song.getAlbum());
+                if(!previousAlbum.equals(song.getAlbum())) {
+                	//only print the same album info once. 
+                	getSongAlbum(song);
+                }
+                previousAlbum = song.getAlbum();
             }
         }
     }
@@ -626,6 +742,7 @@ public class LibraryView {
         	// Displays the number of matches found
             System.out.println("Found " + results.size() + " songs in your library:");
             // Loops through each result and displays formatted information
+            String previousAlbum = "";
             for (int i = 0; i < results.size(); i++) {
                 Song song = results.get(i);
                 System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist() + " from album " + song.getAlbum());
@@ -637,6 +754,11 @@ public class LibraryView {
                 if (song.getRating() != null) {
                     System.out.println("   Rating: " + song.getRating() + "/5");
                 }
+                if(!previousAlbum.equals(song.getAlbum())) {
+                	//only print the same album info once. 
+                	getSongAlbum(song);
+                }
+                previousAlbum = song.getAlbum();
             }
         }
     }
@@ -652,6 +774,7 @@ public class LibraryView {
             System.out.println("No songs found in your library by artist containing '" + artist + "'.");
         } else {
             System.out.println("Found " + results.size() + " songs in your library:");
+            String previousAlbum = "";
             for (int i = 0; i < results.size(); i++) {
                 Song song = results.get(i);
                 System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist() + " from album " + song.getAlbum());
@@ -661,6 +784,11 @@ public class LibraryView {
                 if (song.getRating() != null) {
                     System.out.println("   Rating: " + song.getRating() + "/5");
                 }
+                if(!previousAlbum.equals(song.getAlbum())) {
+                	//only print the same album info once. 
+                	getSongAlbum(song);
+                }
+                previousAlbum = song.getAlbum();
             }
         }
     }
@@ -1255,7 +1383,7 @@ public class LibraryView {
         }
         
         if (genrePlaylists.isEmpty()) {
-            System.out.println("\nPress enter to exit");
+            System.out.println("\nThere are no songs in your library. Press enter to exit");
             scanner.nextLine();
             return;
         }
