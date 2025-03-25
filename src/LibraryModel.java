@@ -699,6 +699,24 @@ public class LibraryModel {
         return false;
     }
     
+    public List<Song> getShuffledLibrarySongs() {
+        List<Song> shuffledSongs = new ArrayList<>(myLibrarySongs);
+        // get the copy of the library songs and shuffle them using collections sort
+        Collections.shuffle(shuffledSongs);
+        return shuffledSongs;
+    }
     
+    
+    // shuffles a playlist given the playlists name 
+    public Playlist shufflePlaylist(String playlistName) {
+        Playlist playlist = getPlaylistWithName(playlistName);
+        if (playlist != null) {
+            playlist.shuffle();
+            return playlist;
+        }
+        return null;
+    }
+    
+     
 }
   
