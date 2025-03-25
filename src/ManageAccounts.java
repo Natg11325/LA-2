@@ -223,7 +223,7 @@ public class ManageAccounts {
     
     // Load a user's library data to a new LibraryModel object that is created for each account
     private LibraryModel loadAccountLibrary(String username) {
-    	// chekcs for a library file for a specific username
+    	// checks for a library file for a specific username.
         String filename = LIBRARY_INFO_DIRECTORY + username + "_library.txt";
         File file = new File(filename);
         if (!file.exists()) {
