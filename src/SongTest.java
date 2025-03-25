@@ -21,6 +21,26 @@ public class SongTest {
     }
     
     @Test
+    public void testPlay() {
+    	Song song = new Song("19", "Adele", "Best for Last", "Pop", 2008);
+    	//test that the song starts with zero plays.
+    	assertEquals(song.getPlays(), 0);
+    	song.play();
+    	//test that play increments plays. 
+    	assertEquals(song.getPlays(), 1);
+    }
+    
+    @Test
+    public void testGetPlays() {
+        Song song = new Song("19", "Adele", "Best for Last", "Pop", 2008);
+      //test that the song starts with zero plays.
+    	assertEquals(song.getPlays(), 0);
+        song.play();
+        //test that play increments plays.
+        assertEquals(song.getPlays(), 1);
+    }
+    
+    @Test
     public void testSetFavorite() {
         Song song = new Song("19", "Adele", "Best for Last", "Pop", 2008);
         
