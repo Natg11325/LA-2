@@ -759,6 +759,33 @@ class LibraryModelTest {
         }
     }
     
+    @Test
+    public void testGetShuffledLibrarySongs() throws FileNotFoundException {
+        MusicStore musicStore = new MusicStore();
+        LibraryModel libraryModel = new LibraryModel(musicStore);
+        
+        // Adds songs to library
+        List<Song> allSongs = musicStore.getAllSongs();
+        for (int i = 0; i < 3 && i < allSongs.size(); i++) {
+            Song song = allSongs.get(i);
+            libraryModel.addSongToLibrary(song.getTitle(), song.getArtist());
+        }
+        
+        // Get original library songs
+        List<Song> originalSongs = libraryModel.getAllLibrarySongs();
+        
+        // Get shuffled songs
+        List<Song> shuffledSongs = libraryModel.getShuffledLibrarySongs();
+        
+        // Verify the size is the same and that its not null
+        assertNotNull(shuffledSongs);
+        assertEquals(originalSongs.size(), shuffledSongs.size());
+        
+        // Verify all of the original songs are in the shuffled list
+        for (Song song : originalSongs) {
+            assertTrue(shuffledSongs.contains(song));
+        }
+    }
     
     
 }
